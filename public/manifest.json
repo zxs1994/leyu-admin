@@ -1,0 +1,9 @@
+{
+  "name": "vue3-ant-admin",
+  "short_name": "admin",
+  "start_url": "/",
+  "display": "minimal-ui",
+  "background_color": "#ffffff",
+  "theme_color": "#3367D6",
+  "icons": []
+}
