@@ -31,11 +31,11 @@ export const userApi = {
 
 export const roleApi = {
   ...createApi('/sys/role'),
+  getPermissionTree: () => get('/sys/role/permission-tree'),
 }
 
 export const permissionApi = {
   ...createApi('/sys/permission'),
-  getPermissionTree: () => get('/sys/permission/tree'),
 }
 
 export const authApi = {

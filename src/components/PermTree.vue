@@ -62,12 +62,12 @@ const onChildChange = (item) => {
 </script>
 
 <template>
-	<ul class="perm-tree flex flex-wrap gap-x-4 gap-y-2 p-2 pl-3 border-l border-gray-300 bg-gray-50">
+	<ul class="perm-tree flex flex-wrap gap-x-4 px-3 py-2 border-l border-gray-300 bg-gray-50">
 		<li
 			v-for="item in tree"
 			:key="item.id"
-			class="perm-node px-2"
-			:class="item.children && item.children.length ? 'basis-full' : 'py-2'">
+			class="perm-node px-3 py-2"
+			:class="item.children && item.children.length ? 'basis-full' : ''">
 			<div class="flex items-center">
 				<!-- 折叠图标，仅有子节点显示 -->
 				<span
@@ -107,7 +107,7 @@ const onChildChange = (item) => {
 							</a-badge>
 						</label>
 
-						<!-- 接口信息（仅叶子显示） -->
+						<!-- 接口信息 -->
 						<span
 							class="text-xs text-gray-500 truncate"
 							v-if="item.children && item.children.length">

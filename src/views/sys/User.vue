@@ -55,7 +55,7 @@ const columns = [
 		dataIndex: 'email',
 	},
 	{
-		title: '权限',
+		title: '角色',
 		dataIndex: 'roles',
 		customRender: ({ text = [] }) => (
 			<Space

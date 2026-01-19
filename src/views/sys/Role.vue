@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue'
 import Rules from '@/utils/rules'
-import { roleApi as api, permissionApi } from '@/api'
+import { roleApi as api } from '@/api'
 import useCrudList from '@/composables/useCrudList'
 import useCrudModal from '@/composables/useCrudModal'
 import useCrudAction from '@/composables/useCrudAction'
@@ -25,9 +25,7 @@ const action = useCrudAction({
 
 const handleDelete = (record) => action.removeById(record)
 const handleEdit = (record) => {
-	if (tree.value.length == 0) {
-		getPermissionTree()
-	}
+	getPermissionTree()
 	modal.openEdit(record)
 }
 const handleCreate = () => modal.openCreate()
@@ -87,7 +85,7 @@ const rules = {
 
 const tree = ref([])
 const getPermissionTree = () => {
-	permissionApi.getPermissionTree().then((res) => {
+	api.getPermissionTree().then((res) => {
 		if (res.success) {
 			tree.value = res.data
 		}
