@@ -110,7 +110,7 @@ const actions = computed(() => {
 			key: 'delete',
 			label: '删除',
 			danger: true,
-			onClick: handleEdit,
+			onClick: handleDelete,
 		})
 	}
 
@@ -191,6 +191,7 @@ const actions = computed(() => {
 				<template v-if="column.dataIndex === 'permissions'">
 					<a-tag
 						v-for="p in record.permissions.slice(0, 3)"
+						:bordered="false"
 						:color="p.del ? 'error' : 'processing'"
 						:key="p.id">
 						{{ p.name }}
@@ -202,12 +203,18 @@ const actions = computed(() => {
 								<a-tag
 									v-for="p in record.permissions.slice(3)"
 									:key="p.id"
+									:bordered="false"
 									:color="p.del ? 'error' : 'processing'">
 									{{ p.name }}
 								</a-tag>
 							</div>
 						</template>
-						<a-tag v-if="record.permissions.length > 3"> +{{ record.permissions.length - 3 }} </a-tag>
+						<a-tag
+							class="cursor-pointer"
+							v-if="record.permissions.length > 3"
+							:bordered="false">
+							+{{ record.permissions.length - 3 }}
+						</a-tag>
 					</a-tooltip>
 				</template>
 				<template v-if="column.dataIndex === 'action'">

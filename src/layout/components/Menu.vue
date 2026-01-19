@@ -7,18 +7,14 @@ import robot from '@/icons/robot.svg'
 import { authApi } from '@/api'
 import { removeToken } from '@/utils'
 import { useUserStore } from '@/stores/user'
-import { useTodoListStore } from '@/stores/todoList'
 import UserModal from '@/components/UserModal.vue'
-import TodoList from '@/components/TodoList.vue'
 import ChatModal from '@/components/ChatModal.vue'
 import { HomeRouter, filterRoutes } from '@/router'
 
 const userStore = useUserStore()
-const todoListStore = useTodoListStore()
 const route = useRoute()
 const router = useRouter()
 const userModalRef = ref()
-const todoListRef = ref()
 const chatModalRef = ref()
 
 function filterVisibleMenu(routes) {
@@ -61,8 +57,6 @@ function findOpenKeys(name, menuList) {
 const routers = filterVisibleMenu([HomeRouter, ...filterRoutes]).filter((i) => i.children)
 
 // console.log(routers)
-
-todoListStore.setList(1, undefined, false)
 
 const getSelectedKeys = () => {
 	return route.matched.map((i) => i.meta?.activeName || i.name)
@@ -109,7 +103,6 @@ watchEffect(() => {
 		v-model:collapsed="collapsed"
 		:collapsed-width="60">
 		<UserModal ref="userModalRef" />
-		<TodoList ref="todoListRef" />
 		<ChatModal ref="chatModalRef" />
 		<div
 			class="toggleMenu"
@@ -122,7 +115,7 @@ watchEffect(() => {
 		</div>
 		<div class="logo-box">
 			<img
-				src="/vite.svg"
+				src="/icons/icon-192.png"
 				style="width: 40px; height: 40px" />
 			<span
 				class="text whitespace-nowrap overflow-hidden text-ellipsis"
@@ -180,15 +173,6 @@ watchEffect(() => {
 					@click="chatModalRef.open = true">
 					<robot />
 				</a-button>
-
-				<a-badge :dot="todoListStore.badge">
-					<a-button
-						type="text"
-						class="but"
-						@click="todoListRef.visible = true"
-						><BellOutlined
-					/></a-button>
-				</a-badge>
 			</div>
 		</div>
 	</a-layout-sider>

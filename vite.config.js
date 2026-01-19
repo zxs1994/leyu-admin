@@ -1,7 +1,13 @@
-import { fileURLToPath, URL } from 'node:url'
+import {
+	fileURLToPath,
+	URL
+} from 'node:url'
 
-import { defineConfig } from 'vite'
+import {
+	defineConfig
+} from 'vite'
 import vue from '@vitejs/plugin-vue'
+import vueJsx from '@vitejs/plugin-vue-jsx'
 import vueDevTools from 'vite-plugin-vue-devtools'
 import Components from 'unplugin-vue-components/vite'
 import tailwindcss from '@tailwindcss/vite'
@@ -9,13 +15,25 @@ import svgLoader from 'vite-svg-loader'
 import pkg from './package.json'
 import compression from 'vite-plugin-compression'
 
-import { AntDesignVueResolver } from 'unplugin-vue-components/resolvers'
+import {
+	AntDesignVueResolver
+} from 'unplugin-vue-components/resolvers'
 
 // https://vite.dev/config/
-export default defineConfig(({ mode }) => {
+export default defineConfig(({
+	mode
+}) => {
 	return {
 		plugins: [
-			vue(),
+			vue({
+				template: {
+					compilerOptions: {
+						// 识别自定义元素，否则会有警告
+						isCustomElement: (tag) => tag === 'markdown-view',
+					},
+				},
+			}),
+			vueJsx(),
 			vueDevTools(),
 			tailwindcss(),
 			Components({
@@ -25,6 +43,7 @@ export default defineConfig(({ mode }) => {
 					}),
 				],
 			}),
+
 			svgLoader(),
 			compression({
 				algorithm: 'gzip',
@@ -35,7 +54,8 @@ export default defineConfig(({ mode }) => {
 		],
 		resolve: {
 			alias: {
-				'@': fileURLToPath(new URL('./src', import.meta.url)),
+				'@': fileURLToPath(new URL('./src',
+					import.meta.url)),
 			},
 		},
 		// server: {
@@ -48,4 +68,3 @@ export default defineConfig(({ mode }) => {
 		},
 	}
 })
-

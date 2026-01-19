@@ -71,7 +71,7 @@ const onSubmit = async () => {
 					name="email"
 					hasFeedback>
 					<a-input
-						v-model:value="form.email"
+						v-model:value.trim="form.email"
 						size="large"
 						:placeholder="rules.email[0].message"
 						v-focus>
@@ -86,7 +86,7 @@ const onSubmit = async () => {
 					<a-input-password
 						size="large"
 						:placeholder="rules.password[0].message"
-						v-model:value="form.password"
+						v-model:value.trim="form.password"
 						@keyup.enter="onSubmit">
 						<template #prefix>
 							<LockOutlined />

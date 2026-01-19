@@ -20,7 +20,7 @@ const createApi = (path) => ({
 })
 
 export const commonApi = {
-  enums: () => get('/common/enums')
+  enums: () => get('/common/enums'),
 }
 
 export const userApi = {
@@ -35,14 +35,10 @@ export const roleApi = {
 
 export const permissionApi = {
   ...createApi('/sys/permission'),
-  getPermissionTree: () => get('/sys/permission/tree')
+  getPermissionTree: () => get('/sys/permission/tree'),
 }
 
 export const authApi = {
   login: (data) => post('/auth/login', data),
   logout: () => post('/auth/logout'),
-}
-
-export const todoListApi = {
-  page: () => {}
 }

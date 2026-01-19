@@ -9,7 +9,7 @@ defineExpose({
 <template>
 	<a-drawer
 		v-model:open="open"
-		title="知识库问答"
+		title="智能聊天"
 		width="600"
 		placement="right">
 		<Chat />

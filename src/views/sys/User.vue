@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="jsx">
 import { ref, computed } from 'vue'
 import Rules from '@/utils/rules'
 import { userApi as api, roleApi } from '@/api'
@@ -6,6 +6,7 @@ import useCrudList from '@/composables/useCrudList'
 import useCrudModal from '@/composables/useCrudModal'
 import useCrudAction from '@/composables/useCrudAction'
 import { checkPermission } from '@/utils/permission'
+import { Tag, Space } from 'ant-design-vue'
 
 const title = '用户'
 const baseCode = 'sys:user'
@@ -56,7 +57,27 @@ const columns = [
 	{
 		title: '权限',
 		dataIndex: 'roles',
-		customRender: ({ text }) => text.map((i) => i.name).join(', '),
+		customRender: ({ text = [] }) => (
+			<Space
+				size={4}
+				wrap>
+				{text.length ? (
+					text.map((item) => (
+						<Tag
+							bordered={false}
+							key={item.id}>
+							{item.name}
+						</Tag>
+					))
+				) : (
+					<Tag color='default'>无</Tag>
+				)}
+			</Space>
+		),
+	},
+	{
+		title: '登录登出',
+		dataIndex: 'tokenVersion',
 	},
 	{
 		title: '创建时间',
@@ -98,7 +119,7 @@ const actions = computed(() => {
 			key: 'delete',
 			label: '删除',
 			danger: true,
-			onClick: handleEdit,
+			onClick: handleDelete,
 		})
 	}
 

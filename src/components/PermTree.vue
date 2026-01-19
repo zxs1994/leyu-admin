@@ -66,8 +66,8 @@ const onChildChange = (item) => {
 		<li
 			v-for="item in tree"
 			:key="item.id"
-			class="perm-node px-2 py-1 rounded-md"
-			:class="item.children && item.children.length ? 'basis-full' : ''">
+			class="perm-node px-2"
+			:class="item.children && item.children.length ? 'basis-full' : 'py-2'">
 			<div class="flex items-center">
 				<!-- 折叠图标，仅有子节点显示 -->
 				<span
@@ -80,7 +80,7 @@ const onChildChange = (item) => {
 				</span>
 				<!-- 权限信息 Tooltip -->
 				<a-tooltip
-					placement="right"
+					placement="top"
 					overlay-class-name="perm-tooltip">
 					<template #title>
 						<div class="text-xs leading-5 space-y-0.5 max-w-xs">
@@ -121,8 +121,7 @@ const onChildChange = (item) => {
 			<PermTree
 				v-model="modelValueLocal"
 				v-if="item.children && item.children.length && !item.collapsed"
-				:tree="item.children"
-				class="mt-1 pl-3" />
+				:tree="item.children" />
 		</li>
 	</ul>
 </template>

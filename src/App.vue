@@ -7,7 +7,9 @@ useEnumsStore().init()
 
 <template>
 	<a-config-provider :locale="zhCN">
-		<RouterView />
+		<a-watermark content="vu3-ant-admin">
+			<RouterView />
+		</a-watermark>
 	</a-config-provider>
 </template>
 
