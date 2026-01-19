@@ -13,8 +13,8 @@ const router = useRouter()
 const loginFormRef = ref()
 
 const form = reactive({
-	email: '',
-	password: '',
+	email: 'admin@qq.com',
+	password: 'admin123',
 })
 
 const rules = {
