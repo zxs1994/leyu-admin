@@ -3,6 +3,7 @@ import {
   UserOutlined,
   TeamOutlined,
   SafetyOutlined,
+  ApartmentOutlined
 } from '@ant-design/icons-vue'
 
 const Layout = () => import('@/layout/Layout.vue')
@@ -21,7 +22,7 @@ export default {
       path: 'user',
       name: 'User',
       meta: {
-        title: '用户',
+        title: '用户管理',
         icon: UserOutlined,
         isShowMenu: true,
         perm: 'sys:user:page', // ⭐ 页面权限
@@ -29,10 +30,21 @@ export default {
       component: () => import('@/views/sys/User.vue'),
     },
     {
+      path: 'dept',
+      name: 'Dept',
+      meta: {
+        title: '组织部门',
+        icon: ApartmentOutlined,
+        isShowMenu: true,
+        perm: 'sys:dept:tree',
+      },
+      component: () => import('@/views/sys/Dept.vue'),
+    },
+    {
       path: 'role',
       name: 'Role',
       meta: {
-        title: '角色',
+        title: '角色管理',
         icon: TeamOutlined,
         isShowMenu: true,
         perm: 'sys:role:page',
@@ -43,7 +55,7 @@ export default {
       path: 'permission',
       name: 'Permission',
       meta: {
-        title: '权限',
+        title: '权限管理',
         icon: SafetyOutlined,
         isShowMenu: true,
         perm: 'sys:permission:page',

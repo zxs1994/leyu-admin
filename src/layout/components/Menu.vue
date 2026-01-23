@@ -1,20 +1,23 @@
 <script setup>
 import { ref, watchEffect } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { BellOutlined, MenuUnfoldOutlined, MenuFoldOutlined, UserOutlined } from '@ant-design/icons-vue'
+import { SwapOutlined, MenuUnfoldOutlined, MenuFoldOutlined, UserOutlined, LogoutOutlined } from '@ant-design/icons-vue'
 import MenuItem from './MenuItem.vue'
 import robot from '@/icons/robot.svg'
 import { authApi } from '@/api'
-import { removeToken } from '@/utils'
+import { gotoLogin } from '@/utils'
 import { useUserStore } from '@/stores/user'
 import UserModal from '@/components/UserModal.vue'
 import ChatModal from '@/components/ChatModal.vue'
+import SwichTenantModal from '@/components/SwichTenantModal.vue'
 import { HomeRouter, filterRoutes } from '@/router'
+import { checkPermission } from '@/utils/permission'
 
 const userStore = useUserStore()
 const route = useRoute()
 const router = useRouter()
-const userModalRef = ref()
+const showUserModal = ref(false)
+const showSwichTenantModal = ref(false)
 const chatModalRef = ref()
 
 function filterVisibleMenu(routes) {
@@ -75,10 +78,8 @@ const logout = async () => {
 	} catch (e) {
 		console.log(e)
 	}
-	// 清除token
-	removeToken()
 	// 跳转到登录页
-	window.location.href = '/login?redirect=' + encodeURIComponent(location.pathname + location.search)
+	gotoLogin(true)
 }
 
 const collapsed = ref(localStorage.getItem('collapsed') ? JSON.parse(localStorage.getItem('collapsed')) : false)
@@ -102,7 +103,13 @@ watchEffect(() => {
 		theme="light"
 		v-model:collapsed="collapsed"
 		:collapsed-width="60">
-		<UserModal ref="userModalRef" />
+		<!-- 只有点击后才渲染 -->
+		<UserModal
+			v-if="showUserModal"
+			@close="showUserModal = false" />
+		<SwichTenantModal
+			v-if="showSwichTenantModal"
+			@close="showSwichTenantModal = false" />
 		<ChatModal ref="chatModalRef" />
 		<div
 			class="toggleMenu"
@@ -136,28 +143,41 @@ watchEffect(() => {
 				:item="item" />
 		</a-menu>
 		<div
-			class="foot !flex-nowrap overflow-hidden"
+			class="foot flex-nowrap! overflow-hidden"
 			:style="{
 				flexDirection: collapsed ? 'column-reverse' : 'row',
 			}">
 			<a-dropdown :trigger="['click']">
-				<!-- <a-button type="text" class="but"><SettingOutlined /></a-button> -->
-				<!-- <a-avatar
-					:size="32"
-					
-					class="shrink-0">
-					
-				</a-avatar> -->
 				<a-avatar style="background-color: #f56a00; cursor: pointer">
 					{{ userStore.userInfo.name }}
 				</a-avatar>
+
 				<template #overlay>
 					<a-menu>
-						<a-menu-item>
-							<div @click="userModalRef.visible = true">个人信息</div>
+						<a-menu-item v-if="checkPermission('platform:tenant:list')">
+							<div
+								class="flex items-center gap-2"
+								@click="showSwichTenantModal = true">
+								<SwapOutlined /> 切换租户
+							</div>
 						</a-menu-item>
+
 						<a-menu-item>
-							<div @click="logout">退出登录</div>
+							<div
+								class="flex items-center gap-2"
+								@click="showUserModal = true">
+								<UserOutlined /> 个人信息
+							</div>
+						</a-menu-item>
+
+						<a-menu-divider />
+
+						<a-menu-item>
+							<div
+								class="flex items-center gap-2"
+								@click="logout">
+								<LogoutOutlined /> 退出登录
+							</div>
 						</a-menu-item>
 					</a-menu>
 				</template>

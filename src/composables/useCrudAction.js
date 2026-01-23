@@ -8,14 +8,13 @@ export default function useCrudAction({
   title,
   reload
 }) {
-  const removeById = (record, options = {}) => {
+  const del = (record, options = {}) => {
     Modal.confirm({
       title: options.confirmTitle || '确认删除？',
       centered: true,
-      content: options.confirmContent ||
-        `确定要删除 ${title}「${record.name || record.id}」吗？`,
+      content: options.confirmContent || `确定要删除 ${title}「${record.name || record.id}」吗？`,
       onOk: async () => {
-        const res = await api.removeById(record.id)
+        const res = await api.delete(record.id)
         if (res.success) {
           message.success(options.successText || '删除成功')
           reload()
@@ -25,6 +24,6 @@ export default function useCrudAction({
   }
 
   return {
-    removeById,
+    delete: del,
   }
 }

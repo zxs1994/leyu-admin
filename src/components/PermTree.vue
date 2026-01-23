@@ -2,6 +2,7 @@
 import { useEnumsStore } from '@/stores/enums'
 import { CaretDownOutlined, CaretRightOutlined } from '@ant-design/icons-vue'
 import { watchEffect, computed } from 'vue'
+
 const enums = useEnumsStore()
 const props = defineProps({
 	tree: {
@@ -9,6 +10,10 @@ const props = defineProps({
 		required: true,
 	},
 	modelValue: {
+		type: Array,
+		required: true,
+	},
+	allRoutes: {
 		type: Array,
 		required: true,
 	},
@@ -36,6 +41,8 @@ const toggleCollapse = (item) => {
 	}
 }
 
+const ACTION_REG = /:(item|add|update|delete)$/
+
 const onChildChange = (item) => {
 	const next = [...props.modelValue]
 	const index = next.findIndex((i) => i === item.id)
@@ -44,16 +51,25 @@ const onChildChange = (item) => {
 	if (item.checked && index === -1) next.push(item.id)
 	if (!item.checked && index !== -1) next.splice(index, 1)
 
-	// ⭐ 补齐 page 权限
-	const pageMatch =
-		item.code?.endsWith(':save') || item.code?.endsWith(':updateById') || item.code?.endsWith(':removeById')
+	// ⭐ 判断操作权限是否需要补齐页面权限
+	const pageMatch = ACTION_REG.test(item.code ?? '')
 
 	if (item.checked && pageMatch) {
-		const pageCode = item.code.replace(/:(save|updateById|removeById)$/, ':page')
-		console.log(pageCode)
-		const page = props.tree.find((i) => i.code === pageCode)
-		if (page) {
-			if (!next.includes(page.id)) next.push(page.id)
+		// 在路由里找 perm 前缀匹配的页面/树/其他权限
+		const matchedRoute = allRoutes.find((r) => {
+			const perm = r.meta?.perm
+			if (!perm) return false
+			// 操作权限前缀匹配页面权限
+			const opPrefix = item.code.replace(ACTION_REG, '')
+			return perm.startsWith(opPrefix)
+		})
+		console.log(matchedRoute)
+		if (matchedRoute) {
+			// 在树里找对应节点
+			const node = props.tree.find((i) => i.code === matchedRoute.meta.perm)
+			if (node && !next.includes(node.id)) {
+				next.push(node.id)
+			}
 		}
 	}
 
@@ -90,7 +106,7 @@ const onChildChange = (item) => {
 								>{{ enums.all.authLevel?.find((i) => i.code == item.authLevel)?.desc }}
 							</div>
 							<div><span class="text-gray-400">请求：</span>{{ item.method }} {{ item.path }}</div>
-							<div><span class="text-gray-400">状态：</span>{{ item.del ? '失效' : '有效' }}</div>
+							<div><span class="text-gray-400">状态：</span>{{ item.status ? '启用' : '停用' }}</div>
 						</div>
 					</template>
 
@@ -100,9 +116,10 @@ const onChildChange = (item) => {
 							<input
 								type="checkbox"
 								v-model="item.checked"
+								:disabled="!item.parentId"
 								@change="onChildChange(item)"
 								class="mr-1 cursor-pointer" />
-							<a-badge :dot="item.del">
+							<a-badge :dot="!item.status">
 								<span class="font-medium">{{ item.name }}</span>
 							</a-badge>
 						</label>
@@ -121,6 +138,7 @@ const onChildChange = (item) => {
 			<PermTree
 				v-model="modelValueLocal"
 				v-if="item.children && item.children.length && !item.collapsed"
+				:allRoutes="props.allRoutes"
 				:tree="item.children" />
 		</li>
 	</ul>

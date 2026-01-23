@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import Rules from '@/utils/rules'
 import { roleApi as api } from '@/api'
 import useCrudList from '@/composables/useCrudList'
@@ -7,6 +7,13 @@ import useCrudModal from '@/composables/useCrudModal'
 import useCrudAction from '@/composables/useCrudAction'
 import PermTree from '@/components/PermTree.vue'
 import { checkPermission } from '@/utils/permission'
+import { routes } from '@/router'
+
+const flattenRoutes = (routes) => {
+	return routes.flatMap((r) => [r, ...(r.children ? flattenRoutes(r.children) : [])])
+}
+
+const allRoutes = flattenRoutes(routes)
 
 const title = '角色'
 const baseCode = 'sys:role'
@@ -15,7 +22,7 @@ const list = useCrudList({ api })
 const modal = useCrudModal({
 	api,
 	initForm: () => ({ name: '', permissionIds: [] }),
-	getById: api.getById,
+	reload: list.reload,
 })
 const action = useCrudAction({
 	api,
@@ -23,19 +30,36 @@ const action = useCrudAction({
 	reload: list.reload,
 })
 
-const handleDelete = (record) => action.removeById(record)
-const handleEdit = (record) => {
-	getPermissionTree()
-	modal.openEdit(record)
+const handleDelete = (record) => action.delete(record)
+const handleUpdate = (record) => {
+	modal.openUpdate(record)
 }
-const handleCreate = () => modal.openCreate()
+const handleAdd = () => {
+	modal.openAdd()
+}
+
+watch(
+	() => modal.state.open,
+	(val) => {
+		if (val) {
+			getPermissionTree()
+		}
+	},
+)
 
 const columns = [
+	// {
+	// 	title: 'ID',
+	// 	dataIndex: 'id',
+	// 	align: 'center',
+	// 	width: 80,
+	// },
 	{
-		title: 'ID',
-		dataIndex: 'id',
+		title: '#',
+		key: 'index',
 		align: 'center',
-		width: 80,
+		width: 60,
+		customRender: ({ index }) => index + 1,
 	},
 	{
 		title: '名称',
@@ -49,11 +73,11 @@ const columns = [
 		title: '权限',
 		dataIndex: 'permissions',
 	},
-	{
-		title: '来源',
-		dataIndex: 'source',
-		align: 'center',
-	},
+	// {
+	// 	title: '来源',
+	// 	dataIndex: 'source',
+	// 	align: 'center',
+	// },
 	{
 		title: '创建时间',
 		dataIndex: 'createdAt',
@@ -95,15 +119,15 @@ const getPermissionTree = () => {
 const actions = computed(() => {
 	const list = []
 
-	if (checkPermission(`${baseCode}:updateById`)) {
+	if (checkPermission(`${baseCode}:update`)) {
 		list.push({
-			key: 'edit',
+			key: 'update',
 			label: '编辑',
-			onClick: handleEdit,
+			onClick: handleUpdate,
 		})
 	}
 
-	if (checkPermission(`${baseCode}:removeById`)) {
+	if (checkPermission(`${baseCode}:delete`)) {
 		list.push({
 			key: 'delete',
 			label: '删除',
@@ -119,7 +143,7 @@ const actions = computed(() => {
 	<div>
 		<a-drawer
 			v-model:open="modal.state.open"
-			:title="modal.state.editingId ? `编辑${title}` : `新建${title}`"
+			:title="modal.state.updateId ? `编辑${title}` : `新建${title}`"
 			placement="right"
 			:width="800">
 			<a-form
@@ -129,17 +153,23 @@ const actions = computed(() => {
 				layout="vertical">
 				<a-form-item
 					label="名称"
-					name="name">
+					name="name"
+					hasFeedback>
 					<a-input
-						v-model:value="modal.state.formState.name"
+						v-model:value.trim="modal.state.formState.name"
 						placeholder="请输入名称" />
 				</a-form-item>
 				<a-form-item
 					label="权限"
-					name="permissionIds">
-					<PermTree
-						v-model="modal.state.formState.permissionIds"
-						:tree="tree" />
+					name="permissionIds"
+					hasFeedback>
+					<div class="max-h-150 overflow-auto border border-gray-200 p-2 rounded-md bg-white">
+						<PermTree
+							v-model="modal.state.formState.permissionIds"
+							:tree="tree"
+							:allRoutes="allRoutes" />
+					</div>
+
 				</a-form-item>
 			</a-form>
 			<template #extra>
@@ -151,7 +181,7 @@ const actions = computed(() => {
 				<a-button
 					type="primary"
 					:loading="modal.state.loading"
-					@click="modal.submit().then((ok) => ok && list.reload())"
+					@click="modal.submit"
 					>确定</a-button
 				>
 			</template>
@@ -168,12 +198,12 @@ const actions = computed(() => {
 				><a-space>
 					<a-button
 						type="primary"
-						@click="handleCreate"
-						v-permission="`${baseCode}:save`">
+						@click="handleAdd"
+						v-permission="`${baseCode}:add`">
 						{{ `新建${title}` }}
 					</a-button>
 					<a-input
-						v-model:value="list.state.query.name"
+						v-model:value.trim="list.state.query.name"
 						:placeholder="`搜索${title}名称`"
 						style="width: 185px"
 						allowClear
@@ -190,7 +220,7 @@ const actions = computed(() => {
 					<a-tag
 						v-for="p in record.permissions.slice(0, 3)"
 						:bordered="false"
-						:color="p.del ? 'error' : 'processing'"
+						:color="p.status ? 'processing' : 'error'"
 						:key="p.id">
 						{{ p.name }}
 					</a-tag>
@@ -202,7 +232,7 @@ const actions = computed(() => {
 									v-for="p in record.permissions.slice(3)"
 									:key="p.id"
 									:bordered="false"
-									:color="p.del ? 'error' : 'processing'">
+									:color="p.status ? 'processing' : 'error'"">
 									{{ p.name }}
 								</a-tag>
 							</div>

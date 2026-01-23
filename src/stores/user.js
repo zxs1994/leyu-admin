@@ -15,9 +15,12 @@ export const useUserStore = defineStore('user', () => {
   let setUserInfoFlag = false
   async function setUserInfo(callback) {
     const res = await userApi.getUserInfo()
-    // console.log(res)
+    // 抛出错误以便路由守卫捕获
+    if (res.data == null) {
+      throw new Error('获取用户信息失败')
+    }
     userInfo.value = res.data || {}
-    setUserInfoFlag = true
+    if (res.data) setUserInfoFlag = true
     callback && callback()
     return res.data
   }

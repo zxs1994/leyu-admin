@@ -21,12 +21,17 @@ export function removeToken() {
   return localStorage.removeItem(TOKEN_KEY)
 }
 
-export const gotoLogin = () => {
+export const gotoLogin = (immediatelyow = false) => {
   removeToken()
-  setTimeout(() => {
+
+  function toLogin() {
     if (location.pathname !== '/login') {
-      window.location.href = '/login?redirect=' + encodeURIComponent(location.pathname +
-        location.search)
+      window.location.href = '/login?redirect=' + encodeURIComponent(location.pathname + location.search)
     }
-  }, 1000)
+  }
+  if (immediatelyow) {
+    toLogin()
+    return
+  }
+  setTimeout(toLogin, 1000)
 }

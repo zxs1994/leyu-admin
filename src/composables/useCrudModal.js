@@ -1,6 +1,7 @@
 import {
   reactive,
-  ref
+  ref,
+  watch
 } from 'vue'
 import {
   message
@@ -9,37 +10,48 @@ import {
 export default function useCrudModal({
   api,
   initForm,
-  // getById
+  reload
 }) {
   const formRef = ref()
   const state = reactive({
-    editingId: undefined,
+    updateId: undefined,
     loading: false,
     open: false,
-    formState: {}
+    formState: {},
+    record: {},
   })
 
-  const openCreate = () => {
-    state.editingId = undefined
+  watch(
+    () => state.open,
+    (newVal) => {
+      if (newVal === false) {
+        formRef.value?.resetFields()
+      }
+    },
+  )
+
+  const openAdd = () => {
+    state.updateId = undefined
+    state.record = {}
     state.formState = initForm()
     state.open = true
   }
 
-  const openEdit = async (record) => {
-    state.editingId = record.id
+  const openUpdate = async (record) => {
+    state.updateId = record.id
     state.open = true
+    state.record = record
     // const res = await getById(record.id)
-    const data = JSON.parse(JSON.stringify(record))
+    // const data = JSON.parse(JSON.stringify(record))
     const target = {}
     for (const key in initForm()) {
-      target[key] = data[key]
+      target[key] = record[key]
     }
     console.log(target)
-    state.formState = target
+    state.formState = JSON.parse(JSON.stringify(target))
   }
 
   const close = () => {
-    formRef.value?.clearValidate()
     state.open = false
   }
 
@@ -47,18 +59,17 @@ export default function useCrudModal({
     await formRef.value.validate()
     state.loading = true
 
-    const apiMethod = state.editingId ?
-      api.updateById :
-      api.save
+    const apiMethod = state.updateId ? api.update : api.add
 
     const res = await apiMethod({
       ...state.formState,
-      id: state.editingId,
+      id: state.updateId,
     })
 
     if (res.success) {
-      message.success(state.editingId ? '更新成功' : '创建成功')
+      message.success(state.updateId ? '更新成功' : '创建成功')
       close()
+      reload()
     }
 
     state.loading = false
@@ -68,8 +79,8 @@ export default function useCrudModal({
   return {
     formRef,
     state,
-    openCreate,
-    openEdit,
+    openAdd,
+    openUpdate,
     close,
     submit,
   }

@@ -58,11 +58,11 @@ export default defineConfig(({
 					import.meta.url)),
 			},
 		},
-		// server: {
-		// 	host: '0.0.0.0', // 👈 让局域网也能访问（可选）
-		// 	port: 9527, // 👈 启动端口号
-		// 	open: true, // 启动后自动打开浏览器（可选）
-		// },
+		server: {
+			host: '0.0.0.0', // 👈 让局域网也能访问（可选）
+			port: 9527, // 👈 启动端口号
+			// open: true, // 启动后自动打开浏览器（可选）
+		},
 		define: {
 			__APP_VERSION__: JSON.stringify(pkg.version),
 		},

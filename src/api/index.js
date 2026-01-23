@@ -12,15 +12,25 @@ import {
 
 const createApi = (path) => ({
   page: (params) => get(`${path}/page`, params),
-  getById: (id) => get(`${path}/${id}`),
-  save: (data) => post(`${path}`, data),
-  updateById: (data) => put(`${path}/${data.id}`, data),
-  removeById: (id) => del(`${path}/${id}`),
+  item: (id) => get(`${path}/${id}`),
+  add: (data) => post(`${path}`, data),
+  update: (data) => put(`${path}/${data.id}`, data),
+  delete: (id) => del(`${path}/${id}`),
   list: (data) => get(`${path}`, data),
 })
 
 export const commonApi = {
   enums: () => get('/common/enums'),
+}
+
+export const authApi = {
+  login: (data) => post('/auth/login', data),
+  logout: () => post('/auth/logout'),
+}
+
+export const deptApi = {
+  ...createApi('/sys/dept'),
+  tree: () => get('/sys/dept/tree'),
 }
 
 export const userApi = {
@@ -38,7 +48,7 @@ export const permissionApi = {
   ...createApi('/sys/permission'),
 }
 
-export const authApi = {
-  login: (data) => post('/auth/login', data),
-  logout: () => post('/auth/logout'),
+export const tenantApi = {
+  ...createApi('/platform/tenant'),
+  switchTenant: (id) => post(`/platform/tenant/switch/${id}`),
 }

@@ -5,6 +5,7 @@ import { userApi } from '@/api'
 import { message } from 'ant-design-vue'
 import { useUserStore } from '@/stores/user'
 const userStore = useUserStore()
+const emit = defineEmits(['close'])
 const props = defineProps({
 	isAddMode: {
 		type: Boolean,
@@ -18,10 +19,10 @@ watch(
 	(val) => {
 		Object.assign(formState, JSON.parse(JSON.stringify(val)))
 	},
-	{ immediate: true, deep: true }
+	{ immediate: true, deep: true },
 )
 
-const visible = ref(false)
+const open = ref(true)
 const modalLoading = ref(false)
 const modalTitle = '个人信息'
 const formRules = {
@@ -33,7 +34,8 @@ const formRef = ref()
 // 模态框取消
 const handleModalCancel = () => {
 	formRef.value.resetFields()
-	visible.value = false
+	open.value = false
+	emit('close')
 }
 
 // 模态框确认
@@ -50,21 +52,20 @@ const handleModalOk = async () => {
 		if (!res.success) {
 			return
 		}
-		visible.value = false
-		res.success && message.success(res.msg)
+		open.value = false
+		res.success && message.success('更新成功')
 		userStore.setUserInfo()
 	}
 }
-
-defineExpose({ visible })
 </script>
 <template>
 	<a-modal
-		v-model:open="visible"
+		:open="open"
 		:title="modalTitle"
 		@ok="handleModalOk"
 		@cancel="handleModalCancel"
 		:confirm-loading="modalLoading"
+		@afterClose="handleModalCancel"
 		centered
 		:width="500">
 		<a-form
@@ -72,11 +73,12 @@ defineExpose({ visible })
 			style="margin-top: 20px"
 			:model="formState"
 			:rules="formRules"
-			:label-col="{ span: 6 }"
-			:wrapper-col="{ span: 16 }">
+			:label-col="{ span: 4 }"
+			:wrapper-col="{ span: 18 }">
 			<a-form-item
 				label="邮箱"
-				name="email">
+				name="email"
+				hasFeedback>
 				<a-input
 					v-model:value="formState.email"
 					disabled
@@ -84,16 +86,18 @@ defineExpose({ visible })
 			</a-form-item>
 			<a-form-item
 				:label="`名称`"
-				name="name">
+				name="name"
+				hasFeedback>
 				<a-input
-					v-focus="visible"
+					v-focus="open"
 					v-model:value="formState.name"
 					:placeholder="`请输入用户名称`" />
 			</a-form-item>
 			<a-form-item
 				label="密码"
 				name="password"
-				v-if="props.isAddMode">
+				v-if="props.isAddMode"
+				hasFeedback>
 				<a-input
 					v-model:value="formState.password"
 					placeholder="请输入密码" />

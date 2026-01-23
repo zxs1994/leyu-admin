@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="jsx">
 import { ref, h } from 'vue'
 import Rules from '@/utils/rules'
 import { permissionApi as api } from '@/api'
@@ -7,6 +7,7 @@ import useCrudModal from '@/composables/useCrudModal'
 import useCrudAction from '@/composables/useCrudAction'
 import { useEnumsStore } from '@/stores/enums'
 import { Badge } from 'ant-design-vue'
+import { Tag } from 'ant-design-vue'
 
 const enums = useEnumsStore()
 
@@ -16,7 +17,7 @@ const list = useCrudList({ api })
 const modal = useCrudModal({
 	api,
 	initForm: () => ({ name: '' }),
-	getById: api.getById,
+	reload: list.reload,
 })
 const action = useCrudAction({
 	api,
@@ -24,9 +25,9 @@ const action = useCrudAction({
 	reload: list.reload,
 })
 
-const handleDelete = (record) => action.removeById(record)
-const handleEdit = (record) => modal.openEdit(record)
-const handleCreate = () => modal.openCreate()
+const handleDelete = (record) => action.delete(record)
+const handleUpdate = (record) => modal.openUpdate(record)
+const handleAdd = () => modal.openAdd()
 
 const columns = [
 	{
@@ -50,7 +51,7 @@ const columns = [
 		dataIndex: 'code',
 		customRender: ({ text, record }) => {
 			return h(Badge, {
-				status: record.del ? 'error' : 'processing',
+				status: record.status ? 'processing' : 'error',
 				text,
 			})
 		},
@@ -70,7 +71,16 @@ const columns = [
 	{
 		title: '访问级别',
 		dataIndex: 'authLevel',
-		customRender: ({ text }) => enums.all.authLevel?.find((i) => i.code == text)?.desc,
+		customRender: ({ text }) => {
+			const level = enums.all.authLevel?.find((i) => i.code == text)
+			return level ? (
+				<Tag
+					bordered={false}
+					color={level.color}>
+					{level.desc}
+				</Tag>
+			) : null
+		},
 	},
 	{
 		title: '创建时间',
@@ -98,7 +108,7 @@ const rules = {
 	<div>
 		<a-modal
 			v-model:open="modal.state.open"
-			:title="modal.state.editingId ? `编辑${title}` : `新建${title}`"
+			:title="modal.state.updateId ? `编辑${title}` : `新建${title}`"
 			:confirm-loading="modal.state.loading"
 			width="500px"
 			centered
@@ -129,7 +139,7 @@ const rules = {
 			<template #title
 				><a-space>
 					<a-input
-						v-model:value="list.state.query.name"
+						v-model:value.trim="list.state.query.name"
 						:placeholder="`搜索${title}名称`"
 						style="width: 185px"
 						allowClear
@@ -150,8 +160,8 @@ const rules = {
 						<a-button
 							size="small"
 							type="link"
-							@click="handleEdit(record)"
-							v-permission="'sys:user:updateById'">
+							@click="handleUpdate(record)"
+							v-permission="'sys:user:update'">
 							编辑
 						</a-button>
 					</a-space>
