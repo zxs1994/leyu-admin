@@ -231,7 +231,7 @@ const actions = computed(() => {
 			<!-- 左侧部门树 -->
 			<a-card
 				:title="title"
-				class="overflow-auto min-w-[280px] max-w-[320px] flex-shrink-0 h-full">
+				class="overflow-auto min-w-70 max-w-[320px] shrink-0 h-full">
 				<template #extra>
 					<a-tooltip title="新建根部门（新租户）">
 						<a-button

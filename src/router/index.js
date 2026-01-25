@@ -90,42 +90,46 @@ const router = createRouter({
     },
   ]
 })
+
 let filterRoutes = []
 let isDynamicRouteAdded = false
 
 router.beforeEach(async (to, from, next) => {
   nProgress.start()
   const hasToken = getToken()
-  if (to.meta && to.meta.whiteList) {
-    if (to.name === 'Login' && hasToken) {
-      return next('/')
-    } else {
-      return next()
-    }
+
+  // 白名单页面
+  if (to.meta?.whiteList) {
+    if (to.name === 'Login' && hasToken) return next('/')
+    return next()
   }
 
-  if (!hasToken) {
-    return next(`/login?redirect=${to.fullPath}`)
-  }
+  if (!hasToken) return next(`/login?redirect=${to.fullPath}`)
 
   const userStore = useUserStore()
 
   if (!isDynamicRouteAdded) {
-    isDynamicRouteAdded = true
     try {
       await userStore.getOrFetchUserInfo()
-      filterRoutes = filterRoutesByUserPerm(routes)
-      filterRoutes.forEach((route) => router.addRoute(route))
-      router.addRoute({
-        path: '/:pathMatch(.*)*',
-        redirect: '/404',
-      })
-      isDynamicRouteAdded = true
 
-      // 🚨 重新跳转当前页面（跳到新注册的路由上）
+      filterRoutes = filterRoutesByUserPerm(routes)
+      filterRoutes.forEach(route => router.addRoute(route))
+
+      // 兜底路由，只添加一次
+      if (!router.hasRoute('not-found')) {
+        router.addRoute({
+          path: '/:pathMatch(.*)*',
+          name: 'not-found',
+          redirect: '/404',
+        })
+      }
+
+      isDynamicRouteAdded = true // ✅ 成功添加路由后再置 true
+
+      // 重新导航到当前页面，确保新路由生效
       return next({
         ...to,
-        replace: true,
+        replace: true
       })
     } catch (err) {
       console.error('加载用户信息失败：', err)

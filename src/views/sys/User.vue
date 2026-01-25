@@ -229,6 +229,7 @@ const actions = computed(() => {
 					:rules="!userStore.userInfo.platformUser ? [{ required: true, message: '请选择组织部门' }] : undefined"
 					hasFeedback>
 					<a-tree-select
+						allowClear
 						v-model:value="modal.state.formState.deptId"
 						:fieldNames="{ label: 'name', value: 'id', children: 'children' }"
 						placeholder="请选择组织部门"
