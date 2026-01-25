@@ -9,7 +9,8 @@ import {
 } from '@/stores/user'
 import {
   getPageTitle,
-  getToken
+  getToken,
+  gotoLogin
 } from '@/utils'
 import {
   filterRoutesByUserPerm
@@ -111,7 +112,9 @@ router.beforeEach(async (to, from, next) => {
   if (!isDynamicRouteAdded) {
     try {
       await userStore.getOrFetchUserInfo()
-
+      if (!userStore.response.success) {
+        throw new Error('用户信息获取失败')
+      }
       filterRoutes = filterRoutesByUserPerm(routes)
       filterRoutes.forEach(route => router.addRoute(route))
 
@@ -133,7 +136,8 @@ router.beforeEach(async (to, from, next) => {
       })
     } catch (err) {
       console.error('加载用户信息失败：', err)
-      return next('/login')
+      gotoLogin(true)
+      return
     }
   }
 

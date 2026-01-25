@@ -11,19 +11,18 @@ import {
 
 export const useUserStore = defineStore('user', () => {
   const userInfo = ref({})
+  const response = ref({})
   // const doubleCount = computed(() => count.value * 2)
   let setUserInfoFlag = false
   async function setUserInfo(callback) {
     const res = await userApi.getUserInfo()
-    // 抛出错误以便路由守卫捕获
-    if (res.data == null) {
-      throw new Error('获取用户信息失败')
-    }
-    userInfo.value = res.data || {}
+    response.value = res
     if (res.data) setUserInfoFlag = true
+    userInfo.value = res.data || {}
     callback && callback()
     return res.data
   }
+
   async function getOrFetchUserInfo(callback) {
     if (!setUserInfoFlag) {
       await setUserInfo(callback)
@@ -31,13 +30,17 @@ export const useUserStore = defineStore('user', () => {
     return userInfo.value
   }
 
-  function setUserInfoFlagFasle() {
+  function reset() {
+    userInfo.value = {}
+    response.value = {}
     setUserInfoFlag = false
   }
+
   return {
+    response,
     userInfo,
     setUserInfo,
     getOrFetchUserInfo,
-    setUserInfoFlagFasle,
+    reset
   }
 })
