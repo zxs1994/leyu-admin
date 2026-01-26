@@ -1,4 +1,4 @@
-const title = 'vu3-ant-admin'
+export const title = __APP_NAME__
 
 const isPWA = window.matchMedia('(display-mode: minimal-ui)').matches
 // console.log(isPWA)

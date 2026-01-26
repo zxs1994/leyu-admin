@@ -64,6 +64,7 @@ export default defineConfig(({
 			// open: true, // 启动后自动打开浏览器（可选）
 		},
 		define: {
+			__APP_NAME__: JSON.stringify(pkg.name),
 			__APP_VERSION__: JSON.stringify(pkg.version),
 		},
 	}

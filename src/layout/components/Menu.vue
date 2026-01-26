@@ -12,6 +12,7 @@ import ChatModal from '@/components/ChatModal.vue'
 import SwichTenantModal from '@/components/SwichTenantModal.vue'
 import { HomeRouter, filterRoutes } from '@/router'
 import { checkPermission } from '@/utils/permission'
+import { title } from '@/utils'
 
 const userStore = useUserStore()
 const route = useRoute()
@@ -128,7 +129,7 @@ watchEffect(() => {
 				class="text whitespace-nowrap overflow-hidden text-ellipsis"
 				style="font-weight: 600"
 				v-if="!collapsed"
-				>Vue3AntAdmin</span
+				>{{ title }}</span
 			>
 		</div>
 		<a-menu

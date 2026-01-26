@@ -69,7 +69,7 @@ const onSubmit = async () => {
 					class="w-12 h-12"
 					src="/icons/icon-192.png"
 					alt="logo" />
-				<span class="text-xl font-semibold">vue3-ant-admin</span>
+				<span class="text-xl font-semibold">leyu-admin</span>
 			</div>
 
 			<!-- 标题 -->
