@@ -19,6 +19,7 @@ const treeData = ref([])
 const users = ref([])
 const selectedDept = ref(null)
 const showAddTenantModal = ref(false)
+const loading = ref(false)
 
 const modal = useCrudModal({
 	api,
@@ -63,8 +64,10 @@ watch(
 
 // 加载部门树
 async function loadTree() {
+	loading.value = true
 	const res = await api.tree()
 	treeData.value = res.data || []
+	loading.value = false
 }
 
 // 加载用户列表
@@ -242,73 +245,77 @@ const actions = computed(() => {
 						</a-button>
 					</a-tooltip>
 				</template>
-				<a-tree
-					:show-line="{ showLeafIcon: false }"
-					blockNode
-					defaultExpandAll
-					v-if="treeData.length > 0"
-					:tree-data="treeData"
-					:field-names="{ key: 'id' }"
-					@select="onSelectDept">
-					<template #title="{ data }">
-						<div class="flex justify-between items-center">
-							<span>{{ data.name }}</span>
-							<a-dropdown
-								:trigger="['click']"
-								v-if="actions.length > 0">
-								<a-button
-									@click.stop
-									type="link"
-									size="small">
-									<EllipsisOutlined />
-								</a-button>
-								<template #overlay>
-									<a-menu>
-										<a-menu-item>
-											<a-button
-												type="link"
-												block
-												v-permission="`sys:user:add`"
-												@click="gotoUser(data)"
-												>新建用户</a-button
-											>
-										</a-menu-item>
-										<a-menu-item>
-											<a-button
-												type="link"
-												block
-												v-permission="`${baseCode}:add`"
-												@click="handleAdd(data)"
-												>新建子部门</a-button
-											>
-										</a-menu-item>
-										<a-menu-item>
-											<a-button
-												type="link"
-												block
-												v-permission="`${baseCode}:update`"
-												@click="handleUpdate(data)"
-												>编辑</a-button
-											>
-										</a-menu-item>
+				<a-spin
+					:spinning="loading"
+					class="w-full">
+					<a-tree
+						:show-line="{ showLeafIcon: false }"
+						blockNode
+						defaultExpandAll
+						v-if="treeData.length > 0"
+						:tree-data="treeData"
+						:field-names="{ key: 'id' }"
+						@select="onSelectDept">
+						<template #title="{ data }">
+							<div class="flex justify-between items-center">
+								<span>{{ data.name }}</span>
+								<a-dropdown
+									:trigger="['click']"
+									v-if="actions.length > 0">
+									<a-button
+										@click.stop
+										type="link"
+										size="small">
+										<EllipsisOutlined />
+									</a-button>
+									<template #overlay>
+										<a-menu>
+											<a-menu-item>
+												<a-button
+													type="link"
+													block
+													v-permission="`sys:user:add`"
+													@click="gotoUser(data)"
+													>新建用户</a-button
+												>
+											</a-menu-item>
+											<a-menu-item>
+												<a-button
+													type="link"
+													block
+													v-permission="`${baseCode}:add`"
+													@click="handleAdd(data)"
+													>新建子部门</a-button
+												>
+											</a-menu-item>
+											<a-menu-item>
+												<a-button
+													type="link"
+													block
+													v-permission="`${baseCode}:update`"
+													@click="handleUpdate(data)"
+													>编辑</a-button
+												>
+											</a-menu-item>
 
-										<a-menu-divider />
-										<a-menu-item>
-											<a-button
-												type="link"
-												block
-												danger
-												v-permission="`${baseCode}:delete`"
-												@click="handleDelete(data)"
-												>删除</a-button
-											>
-										</a-menu-item>
-									</a-menu>
-								</template>
-							</a-dropdown>
-						</div>
-					</template>
-				</a-tree>
+											<a-menu-divider />
+											<a-menu-item>
+												<a-button
+													type="link"
+													block
+													danger
+													v-permission="`${baseCode}:delete`"
+													@click="handleDelete(data)"
+													>删除</a-button
+												>
+											</a-menu-item>
+										</a-menu>
+									</template>
+								</a-dropdown>
+							</div>
+						</template>
+					</a-tree>
+				</a-spin>
 			</a-card>
 
 			<!-- 右侧表格 -->

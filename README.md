@@ -28,8 +28,8 @@
 ## 预览地址
 
 - https://leyu.xusheng94.com
-- https://leyu-admin.xusheng94.com
-  > 注：两个域名暂时指向同一页面
+
+  > 注：免费的部署速度比较慢
 
 ## 目录结构
 
