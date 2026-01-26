@@ -1,6 +1,6 @@
 {
   "name": "leyu-admin",
-  "short_name": "admin",
+  "short_name": "leyu",
   "start_url": "/",
   "display": "minimal-ui",
   "background_color": "#ffffff",
