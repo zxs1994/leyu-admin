@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "test": "vite build --mode=test",
     "build": "vite build",
     "preview": "vite preview",
     "dp": "node ./scripts/deploy.js"

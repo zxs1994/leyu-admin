@@ -22,12 +22,11 @@ app.use(router)
 setupFocusDirective(app)
 setupPermissionDirective(app)
 
-app.mount('#app')
-
 // 挂载全局变量
 app.config.globalProperties.$appName = __APP_NAME__
 app.config.globalProperties.$appVersion = __APP_VERSION__
 
+app.mount('#app')
 
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker
