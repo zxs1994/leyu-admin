@@ -28,21 +28,28 @@ const onSubmit = async () => {
 	// 校验表单
 	await loginFormRef.value.validate()
 
+	loading.value = true
 	// 调用登录接口
-	const res = await authApi.login({
-		email: form.email,
-		password: form.password,
-	})
+	try {
+		const res = await authApi.login({
+			email: form.email,
+			password: form.password,
+		})
 
-	console.log('login res', res)
+		console.log('login res', res)
 
-	if (!res.success) {
-		// message.error(res.message || '登录失败')
+		if (!res.success) {
+			// message.error(res.message || '登录失败')
+			return
+		}
+
+		// 保存 token
+		setToken(res.data)
+	} catch (error) {
 		return
+	} finally {
+		loading.value = false
 	}
-
-	// 保存 token
-	setToken(res.data)
 
 	const previousEmail = localStorage.getItem('email')
 	const currentEmail = form.email
@@ -69,7 +76,7 @@ const onSubmit = async () => {
 					class="w-12 h-12"
 					src="/icons/icon-192.png"
 					alt="logo" />
-				<span class="text-xl font-semibold">leyu-admin</span>
+				<div class="text-xl font-semibold">{{ $appName }}</div>
 			</div>
 
 			<!-- 标题 -->

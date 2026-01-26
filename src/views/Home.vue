@@ -1,9 +1,6 @@
-<script setup>
-const appName = __APP_NAME__
-const appVersion = __APP_VERSION__
-</script>
+<script setup></script>
 <template>
-	<div class="home">{{ appName }} v{{ appVersion }}</div>
+	<div class="home">{{ $appName }} v{{ $appVersion }}</div>
 </template>
 <style lang="less" scoped>
 .home {

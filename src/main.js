@@ -24,6 +24,11 @@ setupPermissionDirective(app)
 
 app.mount('#app')
 
+// 挂载全局变量
+app.config.globalProperties.$appName = __APP_NAME__
+app.config.globalProperties.$appVersion = __APP_VERSION__
+
+
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker
     .register('/sw.js')
