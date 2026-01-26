@@ -2,7 +2,7 @@
   "name": "leyu-admin",
   "description": "Leyu Admin --- 一个基于 Vue 3 + Vite + Ant Design Vue 的现代化后台管理系统模板。",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
