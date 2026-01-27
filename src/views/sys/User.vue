@@ -308,7 +308,7 @@ const actions = computed(() => {
 							<a-button
 								size="small"
 								type="link"
-								:disabled="record.id === 1"
+								:disabled="record.id === '1'"
 								:danger="action.danger"
 								@click="action.onClick(record)">
 								{{ action.label }}

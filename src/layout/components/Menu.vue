@@ -124,7 +124,7 @@ watchEffect(() => {
 		<div class="logo-box">
 			<img
 				src="/icons/icon-192.png"
-				style="width: 40px; height: 40px" />
+				class="w-10" />
 			<span
 				class="text whitespace-nowrap overflow-hidden text-ellipsis"
 				style="font-weight: 600"
