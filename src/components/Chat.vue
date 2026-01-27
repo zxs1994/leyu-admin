@@ -178,7 +178,6 @@ const butClick = () => {
 					display: flex;
 					justify-content: flex-end;
 					padding: 5px 5px;
-					background: #fff;
 					border-top: 1px solid #d9d9d9;
 					border-radius: 0 0 6px 6px;
 				">

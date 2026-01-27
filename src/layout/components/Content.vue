@@ -28,6 +28,5 @@ watchEffect(route, () => {
 <style lang="less" scoped>
 .layout-content {
 	padding: 20px;
-	background: #fff;
 }
 </style>

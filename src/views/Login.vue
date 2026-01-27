@@ -67,21 +67,23 @@ const onSubmit = async () => {
 </script>
 
 <template>
-	<div class="h-screen flex items-center justify-center bg-linear-to-br from-slate-100 to-slate-200">
+	<div
+		class="h-screen flex items-center justify-center bg-linear-to-br from-slate-100 to-slate-200 dark:from-[#141414] dark:to-[#141414]">
 		<!-- 白色登录容器 -->
-		<div class="w-90 rounded-2xl bg-white shadow-[0_20px_60px_-15px_rgba(0,0,0,0.2)] px-8 py-10">
+		<div
+			class="w-90 rounded-2xl bg-white dark:bg-[#1f1f1f] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.2)] dark:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.8)] px-8 py-10">
 			<!-- 顶部 Logo / 图标 -->
 			<div class="flex justify-center items-center space-x-2">
 				<img
 					class="w-12 h-12"
 					src="/icons/icon-192.png"
 					alt="logo" />
-				<div class="text-xl font-semibold">{{ $appName }}</div>
+				<div class="text-xl font-semibold text-gray-900 dark:text-white">{{ $appName }}</div>
 			</div>
 
 			<!-- 标题 -->
 			<div class="text-center m-6">
-				<div class="text-gray-400">请登录你的账号</div>
+				<div class="text-gray-400 dark:text-gray-500">请登录你的账号</div>
 			</div>
 
 			<!-- 表单 -->

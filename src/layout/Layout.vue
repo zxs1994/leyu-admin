@@ -17,6 +17,7 @@ import Header from './components/Header.vue'
 <style lang="less" scoped>
 .layout {
 	min-height: 100vh;
+	background: transparent;
 	// height: 100vh;
 	// 	width: 100vw;
 }

@@ -5,7 +5,7 @@ const router = useRouter()
 </script>
 <template>
 	<a-page-header
-		style="background: #fff; border-bottom: var(--border)"
+		class="border-gray-200! dark:border-[#fdfdfd1f]! border-b"
 		:title="router.currentRoute.value.meta?.title"
 		sub-title=""
 		@back="() => router.go(-1)" />
