@@ -7,7 +7,7 @@ import path from 'path'
 import {
   fileURLToPath
 } from 'url'
-import emailConfig from './config.js'
+import emailConfig from './email.config.js'
 import dotenv from 'dotenv'
 
 // 获取 __dirname

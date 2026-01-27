@@ -4,8 +4,10 @@ import {
 import readline from 'readline'
 import sendMail from './sendMail.js'
 
-const host = ''
-const target = ''
+const mode = process.argv[2] || 'production'
+
+const host = 'root@8.159.136.15'
+const target = '/var/www/leyu-admin'
 
 // 1️⃣ 检查 Git 工作区是否干净
 // 用于保存交互式获取的 commitMsg
@@ -65,7 +67,8 @@ function askCommitMsg() {
 
   // 3️⃣ 打包项目
   try {
-    execSync('vite build', {
+    console.log(`🚀 Building with mode: ${mode}`)
+    execSync(`vite build --mode ${mode}`, {
       stdio: 'inherit',
     })
   } catch (err) {
