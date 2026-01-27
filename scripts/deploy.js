@@ -68,7 +68,7 @@ function askCommitMsg() {
   // 3️⃣ 打包项目
   try {
     console.log(`🚀 Building with mode: ${mode}`)
-    execSync(`vite build --mode ${mode}`, {
+    execSync(`vite build --mode=${mode}`, {
       stdio: 'inherit',
     })
   } catch (err) {
@@ -92,6 +92,7 @@ function askCommitMsg() {
   try {
     if (hasCommand('rsync')) {
       console.log('🚀 使用 rsync 部署（增量 + 删除旧文件）')
+      // 排除了tinymce文件夹, 若使用tinymce, 第一次部署时去掉 --exclude='tinymce'
       execSync(
         `rsync -avz --delete --exclude='tinymce' dist/ ${host}:${target}`, {
           stdio: 'inherit'
@@ -123,7 +124,7 @@ function askCommitMsg() {
   }
 
   // 5️⃣ 发送邮件
-  if (deployFlag && commitMsg) {
+  if (deployFlag && commitMsg && mode === 'production') {
     sendMail(commitMsg)
   }
 
