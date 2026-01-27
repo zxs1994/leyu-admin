@@ -70,6 +70,7 @@ function askCommitMsg() {
     console.log(`🚀 Building with mode: ${mode}`)
     execSync(`vite build --mode=${mode}`, {
       stdio: 'inherit',
+      shell: true,
     })
   } catch (err) {
     console.error('❌ 打包失败', err)
