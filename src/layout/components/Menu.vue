@@ -121,7 +121,7 @@ watchEffect(() => {
 				<component :is="collapsed ? MenuUnfoldOutlined : MenuFoldOutlined" />
 			</a-button>
 		</div>
-		<div class="logo-box border-[#0505050f] dark:border-[#fdfdfd1f] border-e">
+		<div class="logo-box border-(--ui-border-secondary) border-e border-b p-4">
 			<img
 				src="/icons/icon-192.png"
 				class="w-10" />
@@ -144,7 +144,7 @@ watchEffect(() => {
 				:item="item" />
 		</a-menu>
 		<div
-			class="foot flex-nowrap! overflow-hidden 1px solid border-[#0505050f] dark:border-[#fdfdfd1f] border-e"
+			class="foot flex-nowrap! overflow-hidden 1px solid border-(--ui-border-secondary) border-e"
 			:style="{
 				flexDirection: collapsed ? 'column-reverse' : 'row',
 			}">
@@ -210,12 +210,7 @@ watchEffect(() => {
 		}
 	}
 	.toggleMenu {
-		height: 32px;
-		// background: rgba(255, 255, 255, 0.2);
 		display: none;
-		align-items: center;
-		justify-content: center;
-		border-radius: 6px;
 		position: absolute;
 		top: 50%;
 		right: 0;
@@ -227,8 +222,6 @@ watchEffect(() => {
 		align-items: center;
 		justify-content: center;
 		gap: 10px;
-		font-size: 16px;
-		padding: 15px;
 	}
 	.menu {
 		flex: 1;

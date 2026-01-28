@@ -8,16 +8,16 @@ import {
   fileURLToPath
 } from 'url'
 import emailConfig from './email.config.js'
-import dotenv from 'dotenv'
+// import dotenv from 'dotenv'
 
 // 获取 __dirname
 const __filename = fileURLToPath(
   import.meta.url)
 const __dirname = path.dirname(__filename)
 
-dotenv.config({
-  path: path.join(__dirname, '../.env.production')
-})
+// dotenv.config({
+//   path: path.join(__dirname, '../.env.production')
+// })
 
 // 读取 package.json
 const pkgPath = path.join(__dirname, '../package.json')
@@ -32,7 +32,6 @@ export default async function sendMail(commitMsg = '') {
   const mailText = `
 📢 前端发布通知
 版本号: ${version}
-页面地址: ${process.env.VITE_BASE_API}
 ${commitMsg ? `提交信息: ${commitMsg}` : ''}
 `
   try {

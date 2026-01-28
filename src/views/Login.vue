@@ -57,18 +57,26 @@ const onSubmit = async () => {
 	// 更新本地缓存
 	localStorage.setItem('email', currentEmail)
 
-	// 判断是否换账号
-	let redirectPath = previousEmail !== currentEmail ? '/' : route.query.redirect || '/'
+	const redirect = Array.isArray(route.query.redirect) ? route.query.redirect[0] : route.query.redirect
 
-	if (redirectPath === '/404') redirectPath = '/'
+	let redirectPath = '/'
+
+	// 1. 未切换账号，才允许使用 redirect
+	if (!previousEmail || previousEmail === currentEmail) {
+		redirectPath = redirect || '/'
+	}
+
+	// 2. 兜底：404 error 一律回首页
+	if (/^\/(404|error)/.test(redirectPath)) {
+		redirectPath = '/'
+	}
 
 	router.replace(redirectPath)
 }
 </script>
 
 <template>
-	<div
-		class="h-screen flex items-center justify-center bg-linear-to-br from-slate-100 to-slate-200 dark:from-[#141414] dark:to-[#141414]">
+	<div class="h-screen flex items-center justify-center bg-linear-to-br bg-(--ui-bg-layout)">
 		<!-- 白色登录容器 -->
 		<div
 			class="w-90 rounded-2xl bg-white dark:bg-[#1f1f1f] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.2)] dark:shadow-[0_20px_60px_-15px_rgba(0,0,0,0.8)] px-8 py-10">
@@ -78,12 +86,12 @@ const onSubmit = async () => {
 					class="w-12 h-12"
 					src="/icons/icon-192.png"
 					alt="logo" />
-				<div class="text-xl font-semibold text-gray-900 dark:text-white">{{ $appName }}</div>
+				<div class="text-xl font-semibold text-(--ui-text)">{{ $appName }}</div>
 			</div>
 
 			<!-- 标题 -->
 			<div class="text-center m-6">
-				<div class="text-gray-400 dark:text-gray-500">请登录你的账号</div>
+				<div class="text-(--ui-text-tertiary)">请登录你的账号</div>
 			</div>
 
 			<!-- 表单 -->

@@ -165,7 +165,7 @@ const butClick = () => {
 				</div>
 			</div>
 		</div>
-		<div class="input-box relative">
+		<div class="input-box relative border border-(--ui-border)">
 			<a-textarea
 				v-model:value="input"
 				placeholder="Enter发送, Shift + Enter换行"
@@ -173,14 +173,8 @@ const butClick = () => {
 				@keyup.enter="handleKeyUp"
 				style="border: none; box-shadow: none; border-radius: 6px 6px 0 0" />
 			<div
-				style="
-					width: 100%;
-					display: flex;
-					justify-content: flex-end;
-					padding: 5px 5px;
-					border-top: 1px solid #d9d9d9;
-					border-radius: 0 0 6px 6px;
-				">
+				style="border-radius: 0 0 6px 6px"
+				class="border border-(--ui-border) flex justify-end w-full p-1.25">
 				<a-button @click="butClick">
 					<sendIcon v-if="!isReceiving" />
 					<stopIcon v-else />
@@ -207,7 +201,6 @@ const butClick = () => {
 	color: #333;
 }
 .input-box {
-	border: 1px solid #d9d9d9;
 	border-radius: 6px;
 	overflow: hidden;
 	&:hover {

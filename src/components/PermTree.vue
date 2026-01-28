@@ -78,7 +78,7 @@ const onChildChange = (item) => {
 </script>
 
 <template>
-	<ul class="perm-tree flex flex-wrap gap-x-4 px-3 py-2 border-l border-gray-300 bg-gray-50">
+	<ul class="perm-tree flex flex-wrap gap-x-4 px-3 py-2 border-l border-(--ui-border) bg-(--ui-bg-layout)">
 		<li
 			v-for="item in tree"
 			:key="item.id"
@@ -100,13 +100,13 @@ const onChildChange = (item) => {
 					overlay-class-name="perm-tooltip">
 					<template #title>
 						<div class="text-xs leading-5 space-y-0.5 max-w-xs">
-							<div><span class="text-gray-400">编码：</span>{{ item.code }}</div>
+							<div><span class="text-gray-200">编码：</span>{{ item.code }}</div>
 							<div>
-								<span class="text-gray-400">级别：</span
+								<span class="text-gray-200">级别：</span
 								>{{ enums.all.authLevel?.find((i) => i.code == item.authLevel)?.desc }}
 							</div>
-							<div><span class="text-gray-400">请求：</span>{{ item.method }} {{ item.path }}</div>
-							<div><span class="text-gray-400">状态：</span>{{ item.status ? '启用' : '停用' }}</div>
+							<div><span class="text-gray-200">请求：</span>{{ item.method }} {{ item.path }}</div>
+							<div><span class="text-gray-200">状态：</span>{{ item.status ? '启用' : '停用' }}</div>
 						</div>
 					</template>
 
@@ -120,13 +120,13 @@ const onChildChange = (item) => {
 								@change="onChildChange(item)"
 								class="mr-1 cursor-pointer" />
 							<a-badge :dot="!item.status">
-								<span class="font-medium">{{ item.name }}</span>
+								<span>{{ item.name }}</span>
 							</a-badge>
 						</label>
 
 						<!-- 接口信息 -->
 						<span
-							class="text-xs text-gray-500 truncate"
+							class="text-xs text-(--ui-text-tertiary) truncate"
 							v-if="item.children && item.children.length">
 							{{ item.method }} {{ item.path }}
 						</span>

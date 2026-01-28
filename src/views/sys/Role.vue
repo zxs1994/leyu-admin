@@ -163,7 +163,7 @@ const actions = computed(() => {
 					label="权限"
 					name="permissionIds"
 					hasFeedback>
-					<div class="max-h-150 overflow-auto border border-gray-200 p-2 rounded-md bg-white">
+					<div class="max-h-150 overflow-auto border border-(--ui-border) p-2 rounded-md">
 						<PermTree
 							v-model="modal.state.formState.permissionIds"
 							:tree="tree"
