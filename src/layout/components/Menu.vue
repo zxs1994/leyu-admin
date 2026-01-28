@@ -121,7 +121,9 @@ watchEffect(() => {
 				<component :is="collapsed ? MenuUnfoldOutlined : MenuFoldOutlined" />
 			</a-button>
 		</div>
-		<div class="logo-box border-(--ui-border-secondary) border-e border-b p-4">
+		<div
+			class="logo-box border-(--ui-border-secondary) border-e border-b"
+			:class="collapsed ? 'py-4' : 'p-4'">
 			<img
 				src="/icons/icon-192.png"
 				class="w-10" />
