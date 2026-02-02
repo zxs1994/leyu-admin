@@ -1,7 +1,10 @@
 import axios from 'axios'
 import {
   getToken,
-  gotoLogin
+  getRefreshToken,
+  gotoLogin,
+  setToken,
+  removeRefreshToken
 } from '@/utils'
 // import router from '@/router'
 import {
@@ -12,8 +15,10 @@ export const axiosInstance = axios.create({
 })
 import dayjs from 'dayjs'
 import {
-  userApi
+  authApi
 } from '@/api'
+
+let refreshingPromise = null
 
 const transformData = (data, obj) => {
   if (!data) return {} // 如果数据不存在，直接返回
@@ -89,24 +94,51 @@ axiosInstance.interceptors.response.use(
           gotoLogin()
           break
 
-        case '10009':
-          try {
-            if (config.name === 'refreshToken') {
-              throw new Error('Token 刷新失败')
-            }
-            await userApi.refresh()
-            return axiosInstance(config) // 重试原始请求
-          } catch (e) {
-            console.log(e)
+        case 498: {
+          if (config.__isRefreshRequest) {
+            removeRefreshToken()
             gotoLogin()
-
             break
           }
-          default:
-            if (!config.noShowError) {
-              message.error(msg)
-            }
+
+          const refreshToken = getRefreshToken()
+          if (!refreshToken) {
+            gotoLogin()
             break
+          }
+
+          try {
+            if (!refreshingPromise) {
+              refreshingPromise = authApi
+                .refresh({
+                  refreshToken
+                }, {
+                  __isRefreshRequest: true
+                })
+                .finally(() => {
+                  refreshingPromise = null
+                })
+            }
+
+            const refreshRes = await refreshingPromise
+            setToken(refreshRes)
+            return axiosInstance({
+              ...config,
+              __isRefreshRequest: true,
+            })
+          } catch (e) {
+            console.error('refresh token error:', e)
+            removeRefreshToken()
+            gotoLogin()
+            break
+          }
+        }
+
+        default:
+          if (!config.noShowError) {
+            message.error(msg)
+          }
+          break
       }
       return transformRes(data)
     },

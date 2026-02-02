@@ -26,6 +26,7 @@ export const commonApi = {
 export const authApi = {
   login: (data) => post('/auth/login', data),
   logout: () => post('/auth/logout'),
+  refresh: (data) => post('/auth/refresh', data),
 }
 
 export const deptApi = {

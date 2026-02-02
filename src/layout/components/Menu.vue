@@ -20,6 +20,7 @@ const router = useRouter()
 const showUserModal = ref(false)
 const showSwichTenantModal = ref(false)
 const chatModalRef = ref()
+const logoutLoading = ref(false)
 
 function filterVisibleMenu(routes) {
 	return routes
@@ -73,14 +74,17 @@ const handleClick = (e) => {
 	router.push({ name: e.key })
 }
 const logout = async () => {
-	console.log(route.fullPath)
+	const timeoutMs = 400
+	logoutLoading.value = true
 	try {
-		await authApi.logout()
+		await Promise.race([authApi.logout(), new Promise((resolve) => setTimeout(resolve, timeoutMs))])
 	} catch (e) {
 		console.log(e)
+	} finally {
+		logoutLoading.value = false
+		// 跳转到登录页
+		gotoLogin(true)
 	}
-	// 跳转到登录页
-	gotoLogin(true)
 }
 
 const collapsed = ref(localStorage.getItem('collapsed') ? JSON.parse(localStorage.getItem('collapsed')) : false)
@@ -176,11 +180,13 @@ watchEffect(() => {
 						<a-menu-divider />
 
 						<a-menu-item>
-							<div
-								class="flex items-center gap-2"
-								@click="logout">
-								<LogoutOutlined /> 退出登录
-							</div>
+							<a-spin :spinning="logoutLoading">
+								<div
+									class="flex items-center gap-2"
+									@click="logout">
+									<LogoutOutlined /> 退出登录
+								</div>
+							</a-spin>
 						</a-menu-item>
 					</a-menu>
 				</template>
