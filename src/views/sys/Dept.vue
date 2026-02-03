@@ -18,6 +18,7 @@ const baseCode = 'sys:dept'
 const treeData = ref([])
 const users = ref([])
 const selectedDept = ref(null)
+const selectedKeys = ref([])
 const showAddTenantModal = ref(false)
 const loading = ref(false)
 
@@ -67,7 +68,30 @@ async function loadTree() {
 	loading.value = true
 	const res = await api.tree()
 	treeData.value = res.data || []
+	if (selectedDept.value) {
+		const current = findDeptById(treeData.value, selectedDept.value.id)
+		if (current) {
+			selectedDept.value = current
+			selectedKeys.value = [current.id]
+		} else {
+			selectedDept.value = null
+			selectedKeys.value = []
+		}
+	} else if (treeData.value.length > 0) {
+		selectedDept.value = treeData.value[0]
+		selectedKeys.value = [treeData.value[0].id]
+	}
 	loading.value = false
+}
+
+function findDeptById(list, id) {
+	for (const item of list || []) {
+		if (item.id === id) return item
+		const children = item.children || []
+		const found = findDeptById(children, id)
+		if (found) return found
+	}
+	return null
 }
 
 // 加载用户列表
@@ -216,7 +240,7 @@ const actions = computed(() => {
 					label="排序"
 					name="sort">
 					<a-input-number
-						class="!w-full"
+						class="w-full!"
 						v-model:value="modal.state.formState.sort" />
 				</a-form-item>
 
@@ -250,6 +274,7 @@ const actions = computed(() => {
 					class="w-full">
 					<a-tree
 						:show-line="{ showLeafIcon: false }"
+						v-model:selected-keys="selectedKeys"
 						blockNode
 						defaultExpandAll
 						v-if="treeData.length > 0"
