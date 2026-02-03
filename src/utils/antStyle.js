@@ -48,6 +48,10 @@ const applyAntdTokenVars = (isDark) => {
       .toLowerCase()
     root.style.setProperty(cssVarName, token[item])
   })
+
+  root.style.setProperty('--ui-scrollbar-thumb', isDark ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.25)')
+  root.style.setProperty('--ui-scrollbar-thumb-hover', isDark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.35)')
+  root.style.setProperty('--ui-scrollbar-track', token.colorBgContainer)
 }
 
 

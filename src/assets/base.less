@@ -1,7 +1,28 @@
-:root {
-}
-
 button > span > svg {
 	/* tailwindcss和ant样式冲突 按钮中图标靠下的问题 */
 	vertical-align: baseline;
+}
+
+/* 滚动条样式（基于暗黑/浅色变量） */
+* {
+	scrollbar-color: var(--ui-scrollbar-thumb) var(--ui-scrollbar-track);
+	scrollbar-width: thin;
+}
+
+*::-webkit-scrollbar {
+	width: 10px;
+	height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+	background: var(--ui-scrollbar-track);
+}
+
+*::-webkit-scrollbar-thumb {
+	background-color: var(--ui-scrollbar-thumb);
+	border-radius: 10px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+	background-color: var(--ui-scrollbar-thumb-hover);
 }

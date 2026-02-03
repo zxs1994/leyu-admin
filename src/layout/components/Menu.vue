@@ -127,7 +127,7 @@ watchEffect(() => {
 		</div>
 		<div
 			class="logo-box border-(--ui-border-secondary) border-e border-b"
-			:class="collapsed ? 'py-4' : 'p-4'">
+			:class="collapsed ? 'py-2.5' : 'p-2.5'">
 			<img
 				src="/icons/icon-192.png"
 				class="w-10" />
