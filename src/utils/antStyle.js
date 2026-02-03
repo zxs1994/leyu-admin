@@ -2,7 +2,8 @@ import {
   theme
 } from 'ant-design-vue'
 import {
-  ref
+  ref,
+  watch
 } from 'vue'
 
 const {
@@ -14,7 +15,7 @@ const {
 const applyAntdTokenVars = (isDark) => {
   const algorithm = isDark ? darkAlgorithm : defaultAlgorithm
   const token = algorithm(defaultSeed)
-  console.log(token)
+  // console.log(token)
   const colorKeys = [
     'colorBgLayout',
     'colorBgContainer',
@@ -57,11 +58,16 @@ const applyAntdTokenVars = (isDark) => {
 
 // 响应式算法
 export const currentAlgorithm = ref(defaultAlgorithm)
+export const currentIsDark = ref(false)
 
 // 切换算法函数
 export const updateAlgorithm = (isDark) => {
-  currentAlgorithm.value = isDark ? darkAlgorithm : defaultAlgorithm
-  applyAntdTokenVars(isDark)
+  const nextIsDark = !!isDark
+  currentAlgorithm.value = nextIsDark ? darkAlgorithm : defaultAlgorithm
+  applyAntdTokenVars(nextIsDark)
+  if (currentIsDark.value !== nextIsDark) {
+    currentIsDark.value = nextIsDark
+  }
 }
 
 // 初始化：根据系统偏好
@@ -71,4 +77,8 @@ updateAlgorithm(mql.matches)
 // 监听系统偏好变化
 mql.addEventListener('change', (e) => {
   updateAlgorithm(e.matches)
+})
+
+watch(currentIsDark, () => {
+  updateAlgorithm(currentIsDark.value)
 })

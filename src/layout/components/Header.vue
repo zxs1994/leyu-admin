@@ -1,16 +1,11 @@
 <script setup>
 import { useRouter } from 'vue-router'
-import { updateAlgorithm } from '@/utils/antStyle'
-import { ref } from 'vue'
+import { currentIsDark } from '@/utils/antStyle'
 import SunIcon from '@/icons/sun.svg'
 import MoonIcon from '@/icons/moon.svg'
 
-const mql = window.matchMedia('(prefers-color-scheme: dark)')
-const isDark = ref(mql.matches)
-
 const toggleDark = () => {
-	isDark.value = !isDark.value
-	updateAlgorithm(isDark.value)
+	currentIsDark.value = !currentIsDark.value
 }
 
 const router = useRouter()
@@ -28,7 +23,7 @@ const router = useRouter()
 				type="text"
 				@click="toggleDark">
 				<SunIcon
-					v-if="isDark"
+					v-if="currentIsDark"
 					class="w-6 h-6" />
 				<MoonIcon
 					v-else
