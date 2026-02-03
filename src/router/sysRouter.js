@@ -11,6 +11,7 @@ const Layout = () => import('@/layout/Layout.vue')
 export default {
   path: '/sys',
   name: 'Sys',
+  redirect: '/sys/user',
   meta: {
     title: '系统',
     icon: SettingOutlined,
