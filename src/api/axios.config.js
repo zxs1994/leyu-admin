@@ -26,6 +26,9 @@ const transformData = (data, obj) => {
     ...data,
     ...obj
   }
+  if (!data.createdAt && !data.updatedAt) {
+    return result
+  }
   result.createdAt = data.createdAt ? dayjs(data.createdAt).format('YYYY-MM-DD HH:mm:ss') : ''
   result.updatedAt = data.updatedAt ? dayjs(data.updatedAt).format('YYYY-MM-DD HH:mm:ss') : ''
 
@@ -77,6 +80,13 @@ axiosInstance.interceptors.request.use(async function (config) {
 
 axiosInstance.interceptors.response.use(
   async res => {
+      const responseType = res.request?.responseType
+
+      // 如果是下载文件，直接返回原始响应
+      if (/blob|arraybuffer|stream/.test(responseType) || res.data instanceof Blob) {
+        return res.data
+      }
+
       const data = res.data || {}
       const code = data.code
       const config = res.config || {}
