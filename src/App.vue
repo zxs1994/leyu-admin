@@ -1,10 +1,14 @@
 <script setup>
 import { RouterView } from 'vue-router'
 import zhCN from 'ant-design-vue/es/locale/zh_CN'
+import { storeToRefs } from 'pinia'
 import { useEnumsStore } from './stores/enums'
-import { currentAlgorithm } from '@/utils/antStyle'
+import { useSysSetingStore } from '@/stores/sysSeting'
 
 useEnumsStore().init()
+
+const sysSetingStore = useSysSetingStore()
+const { currentAlgorithm } = storeToRefs(sysSetingStore)
 </script>
 
 <template>

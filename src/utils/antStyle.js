@@ -1,84 +1,16 @@
 import {
-  theme
-} from 'ant-design-vue'
-import {
-  ref,
-  watch
-} from 'vue'
+  useSysSetingStore
+} from '@/stores/sysSeting'
 
-const {
-  defaultAlgorithm,
-  darkAlgorithm,
-  defaultSeed
-} = theme
+export const initAntStyle = (pinia) => {
+  const sysSetingStore = useSysSetingStore(pinia)
 
-const applyAntdTokenVars = (isDark) => {
-  const algorithm = isDark ? darkAlgorithm : defaultAlgorithm
-  const token = algorithm(defaultSeed)
-  // console.log(token)
-  const colorKeys = [
-    'colorBgLayout',
-    'colorBgContainer',
-    'colorBgElevated',
-    'colorBgSpotlight',
+  // 初始化：根据系统偏好
+  const mql = window.matchMedia('(prefers-color-scheme: dark)')
+  sysSetingStore.updateAlgorithm(mql.matches)
 
-    'colorText',
-    'colorTextSecondary',
-    'colorTextTertiary',
-    'colorTextQuaternary',
-
-    'colorBorder',
-    'colorBorderSecondary',
-
-    'colorPrimary',
-    'colorSuccess',
-    'colorWarning',
-    'colorError',
-    'colorInfo',
-
-    'colorPrimaryHover',
-    'colorPrimaryActive',
-  ]
-
-  const root = document.documentElement
-  colorKeys.forEach(item => {
-    // 把驼峰转短横线，并去掉 color 前缀
-    const cssVarName = '--ui' + item
-      .replace(/^color/, '') // 去掉 color 前缀
-      .replace(/([A-Z])/g, '-$1') // 驼峰转短横线
-      .toLowerCase()
-    root.style.setProperty(cssVarName, token[item])
+  // 监听系统偏好变化
+  mql.addEventListener('change', (e) => {
+    sysSetingStore.updateAlgorithm(e.matches)
   })
-
-  root.style.setProperty('--ui-scrollbar-thumb', isDark ? 'rgba(255,255,255,0.35)' : 'rgba(0,0,0,0.25)')
-  root.style.setProperty('--ui-scrollbar-thumb-hover', isDark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.35)')
-  root.style.setProperty('--ui-scrollbar-track', token.colorBgContainer)
 }
-
-
-// 响应式算法
-export const currentAlgorithm = ref(defaultAlgorithm)
-export const currentIsDark = ref(false)
-
-// 切换算法函数
-export const updateAlgorithm = (isDark) => {
-  const nextIsDark = !!isDark
-  currentAlgorithm.value = nextIsDark ? darkAlgorithm : defaultAlgorithm
-  applyAntdTokenVars(nextIsDark)
-  if (currentIsDark.value !== nextIsDark) {
-    currentIsDark.value = nextIsDark
-  }
-}
-
-// 初始化：根据系统偏好
-const mql = window.matchMedia('(prefers-color-scheme: dark)')
-updateAlgorithm(mql.matches)
-
-// 监听系统偏好变化
-mql.addEventListener('change', (e) => {
-  updateAlgorithm(e.matches)
-})
-
-watch(currentIsDark, () => {
-  updateAlgorithm(currentIsDark.value)
-})

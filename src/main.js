@@ -10,14 +10,18 @@ import {
 
 import App from './App.vue'
 import router from './router'
+import {
+  initAntStyle
+} from './utils/antStyle'
 import dayjs from "dayjs"
 import "dayjs/locale/zh-cn" // 👈 引入 dayjs 的中文
 dayjs.locale("zh-cn") // 设置全局语言
 
 const app = createApp(App)
 
-
-app.use(createPinia())
+const pinia = createPinia()
+app.use(pinia)
+initAntStyle(pinia)
 app.use(router)
 setupFocusDirective(app)
 setupPermissionDirective(app)
