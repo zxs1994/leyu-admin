@@ -2,6 +2,9 @@ import {
   ref
 } from 'vue'
 import {
+  playFlapEffect
+} from '@/utils/flapEffect'
+import {
   defineStore
 } from 'pinia'
 import {
@@ -14,9 +17,7 @@ const {
   defaultSeed
 } = theme
 
-const applyAntdTokenVars = (isDark) => {
-  const algorithm = isDark ? darkAlgorithm : defaultAlgorithm
-  const token = algorithm(defaultSeed)
+const applyAntdTokenVars = (isDark, token) => {
   const colorKeys = [
     'colorBgLayout',
     'colorBgContainer',
@@ -58,12 +59,22 @@ const applyAntdTokenVars = (isDark) => {
 export const useSysSetingStore = defineStore('sysSeting', () => {
   const currentAlgorithm = ref(defaultAlgorithm)
   const currentIsDark = ref(false)
+  let firstRun = true
 
   const updateAlgorithm = (isDark) => {
     const nextIsDark = !!isDark
-    currentAlgorithm.value = nextIsDark ? darkAlgorithm : defaultAlgorithm
-    applyAntdTokenVars(nextIsDark)
-    currentIsDark.value = isDark
+    const algorithm = nextIsDark ? darkAlgorithm : defaultAlgorithm
+    const token = algorithm(defaultSeed)
+    const duration = 1500
+    if (!firstRun) {
+      playFlapEffect(nextIsDark, token, duration)
+    }
+    setTimeout(() => {
+      currentAlgorithm.value = algorithm
+      applyAntdTokenVars(nextIsDark, token)
+      currentIsDark.value = isDark
+      firstRun = false
+    }, firstRun ? 0 : duration * 0.52) // 首次无延迟，后续有动画延迟
   }
 
   const toggleDark = () => {
