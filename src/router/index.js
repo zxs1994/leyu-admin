@@ -150,20 +150,25 @@ router.afterEach((to) => {
   nProgress.done()
 })
 
+// 非开发环境下，监听路由错误，处理动态模块加载失败问题(新版本发布后会出现)
+// 前提是旧的页面还未关闭 & 要跳转的页面没加载过 & 旧文件被删除
 if (
-  import.meta.env.VITE_APP_ENV !== 'test') {
+  import.meta.env.PROD) {
   router.onError((err, to) => {
     console.log('router err: ', err)
     const msg = err?.message || ''
     const isModuleLoadError =
       msg.includes('Failed to fetch dynamically imported module') ||
-      msg.includes('Loading module') ||
-      msg.includes('network error') ||
-      msg.includes('Module script failed to load')
+      (
+        msg.includes('Module script failed to load') &&
+        msg.includes('import')
+      )
 
     if (isModuleLoadError) {
+      message.warning('检测到新版本，正在刷新页面…')
       console.warn(`📢 动态模块加载失败，刷新跳转到 ${to.fullPath}`)
-      window.location.href = to.fullPath
+      // 用 replace，避免刷新后回退又触发
+      window.location.replace(to.fullPath)
     }
   })
 }
