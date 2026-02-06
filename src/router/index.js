@@ -150,7 +150,8 @@ router.afterEach((to) => {
   nProgress.done()
 })
 
-if (process.env.NODE_ENV !== 'development') {
+if (
+  import.meta.env.VITE_APP_ENV !== 'test') {
   router.onError((err, to) => {
     console.log('router err: ', err)
     const msg = err?.message || ''
