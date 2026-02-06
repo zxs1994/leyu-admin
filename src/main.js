@@ -28,6 +28,7 @@ setupPermissionDirective(app)
 
 // 挂载全局变量
 app.config.globalProperties.$appName = __APP_NAME__
+app.config.globalProperties.$appZhName = __APP_ZH_NAME__
 app.config.globalProperties.$appVersion = __APP_VERSION__
 
 app.mount('#app')

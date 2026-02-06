@@ -65,6 +65,7 @@ export default defineConfig(({
 		},
 		define: {
 			__APP_NAME__: JSON.stringify(pkg.name),
+			__APP_ZH_NAME__: JSON.stringify(pkg.zhName),
 			__APP_VERSION__: JSON.stringify(pkg.version),
 		},
 	}

@@ -1,4 +1,4 @@
-export const title = __APP_NAME__
+export const title = __APP_ZH_NAME__
 
 const isPWA = window.matchMedia('(display-mode: minimal-ui)').matches
 // console.log(isPWA)

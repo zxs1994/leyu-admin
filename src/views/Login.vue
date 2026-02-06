@@ -86,7 +86,7 @@ const onSubmit = async () => {
 					class="w-12 h-12"
 					src="/icons/icon-192.png"
 					alt="logo" />
-				<div class="text-xl font-semibold text-(--ui-text)">{{ $appName }}</div>
+				<div class="text-xl font-semibold text-(--ui-text)">{{ $appZhName }}</div>
 			</div>
 
 			<!-- 标题 -->
