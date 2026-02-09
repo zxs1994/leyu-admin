@@ -1,14 +1,12 @@
 <script setup lang="jsx">
 import { ref, watch, computed } from 'vue'
-import { message, Modal } from 'ant-design-vue'
 import { deptApi as api, userApi } from '@/api'
 import useCrudModal from '@/composables/useCrudModal'
 import useCrudAction from '@/composables/useCrudAction'
-import { UserOutlined, ApartmentOutlined, EllipsisOutlined, PlusOutlined } from '@ant-design/icons-vue'
+import { ApartmentOutlined, EllipsisOutlined, PlusOutlined } from '@ant-design/icons-vue'
 import { checkPermission } from '@/utils/permission'
 import { useRouter } from 'vue-router'
 import AddTenantModal from '@/components/AddTenantModal.vue'
-import { Tag } from 'ant-design-vue'
 
 const router = useRouter()
 
@@ -107,12 +105,6 @@ function onSelectDept(selectedKeys, info) {
 }
 
 const columns = [
-	// {
-	// 	title: 'ID',
-	// 	dataIndex: 'id',
-	// 	align: 'center',
-	// 	width: 80,
-	// },
 	{
 		title: '#',
 		key: 'index',
@@ -133,11 +125,11 @@ const columns = [
 		dataIndex: 'status',
 		align: 'center',
 		customRender: ({ text }) => (
-			<Tag
+			<a-tag
 				color={text ? 'success' : 'error'}
 				bordered={false}>
 				{text ? '启用' : '禁用'}
-			</Tag>
+			</a-tag>
 		),
 	},
 	{

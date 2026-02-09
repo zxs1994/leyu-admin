@@ -46,3 +46,21 @@ export const gotoLogin = (immediatelyow = false) => {
   }
   setTimeout(toLogin, 1000)
 }
+
+// 头像背景色列表（柔和配色）
+const avatarColors = [
+  '#fde3cf',
+  '#f56a00',
+  '#87d068',
+  '#1890ff',
+]
+
+// 根据名字计算头像颜色
+export const getAvatarColor = (name) => {
+  if (!name) return avatarColors[0]
+  let sum = 0
+  for (let i = 0; i < name.length; i++) {
+    sum += name.charCodeAt(i)
+  }
+  return avatarColors[sum % avatarColors.length]
+}

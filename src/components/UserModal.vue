@@ -34,7 +34,7 @@ const formRef = ref()
 // 模态框取消
 const handleModalCancel = () => {
 	formRef.value.resetFields()
-	open.value = false
+	// open.value = false
 	emit('close')
 }
 
@@ -52,7 +52,7 @@ const handleModalOk = async () => {
 		if (!res.success) {
 			return
 		}
-		open.value = false
+		handleModalCancel()
 		res.success && message.success('更新成功')
 		userStore.setUserInfo()
 	}

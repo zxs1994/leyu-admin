@@ -6,7 +6,6 @@ import useCrudList from '@/composables/useCrudList'
 import useCrudModal from '@/composables/useCrudModal'
 import useCrudAction from '@/composables/useCrudAction'
 import { checkPermission } from '@/utils/permission'
-import { Tag, Space } from 'ant-design-vue'
 import { useUserStore } from '@/stores/user'
 
 const userStore = useUserStore()
@@ -79,7 +78,7 @@ const columns = [
 		key: 'index',
 		align: 'center',
 		width: 60,
-		customRender: ({ index }) => index + 1,
+		customRender: ({ index }) => list.getIndex(index),
 	},
 	{
 		title: '名称',
@@ -93,30 +92,30 @@ const columns = [
 		title: '组织部门',
 		dataIndex: 'deptName',
 		customRender: ({ text }) => (
-			<Tag
+			<a-tag
 				bordered={false}
 				color={text ? 'default' : 'red'}>
 				{text || '平台'}
-			</Tag>
+			</a-tag>
 		),
 	},
 	{
 		title: '角色',
 		dataIndex: 'roles',
 		customRender: ({ text = [] }) => (
-			<Space
+			<a-space
 				size={4}
 				wrap>
 				{text.length
 					? text.map((item) => (
-							<Tag
+							<a-tag
 								bordered={false}
 								key={item.id}>
 								{item.name}
-							</Tag>
+							</a-tag>
 						))
 					: ''}
-			</Space>
+			</a-space>
 		),
 	},
 	{
@@ -124,11 +123,11 @@ const columns = [
 		dataIndex: 'status',
 		align: 'center',
 		customRender: ({ text }) => (
-			<Tag
+			<a-tag
 				color={text ? 'success' : 'error'}
 				bordered={false}>
 				{text ? '启用' : '禁用'}
-			</Tag>
+			</a-tag>
 		),
 	},
 	{
@@ -150,6 +149,26 @@ const columns = [
 		dataIndex: 'action',
 		align: 'center',
 		fixed: 'right',
+		customRender: ({ record }) => (
+			<a-space size={0}>
+				{actions.value.map((action, idx) => [
+					idx > 0 && (
+						<span key={'split-' + idx}>
+							<a-divider type='vertical' />
+						</span>
+					),
+					<a-button
+						key={action.key}
+						size='small'
+						type='link'
+						disabled={record.id === '1'}
+						danger={action.danger}
+						onClick={() => action.onClick(record)}>
+						{action.label}
+					</a-button>,
+				])}
+			</a-space>
+		),
 	},
 ]
 
@@ -296,27 +315,6 @@ const actions = computed(() => {
 					</a-button>
 				</a-space></template
 			>
-			<template #bodyCell="{ column, record }">
-				<template v-if="column.dataIndex === 'action'">
-					<a-space :size="0">
-						<template #split>
-							<a-divider type="vertical" />
-						</template>
-						<template
-							v-for="action in actions"
-							:key="action.key">
-							<a-button
-								size="small"
-								type="link"
-								:disabled="record.id === '1'"
-								:danger="action.danger"
-								@click="action.onClick(record)">
-								{{ action.label }}
-							</a-button>
-						</template>
-					</a-space>
-				</template>
-			</template>
 		</a-table>
 	</div>
 </template>

@@ -155,7 +155,7 @@ watchEffect(() => {
 				flexDirection: collapsed ? 'column-reverse' : 'row',
 			}">
 			<a-dropdown :trigger="['click']">
-				<a-avatar style="background-color: #f56a00; cursor: pointer">
+				<a-avatar :style="{ 'background-color': userStore.userInfo.color, cursor: 'pointer' }">
 					{{ userStore.userInfo.name }}
 				</a-avatar>
 

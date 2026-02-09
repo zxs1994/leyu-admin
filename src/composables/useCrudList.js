@@ -101,6 +101,11 @@ export default function useCrudList({
 
   firstGet && getList()
 
+  const getIndex = (index) => {
+    const pagination = state.pagination
+    return (pagination.current - 1) * pagination.pageSize + index + 1
+  }
+
   return {
     state,
     handleTableChange,
@@ -110,5 +115,6 @@ export default function useCrudList({
     search,
     router,
     route,
+    getIndex,
   }
 }

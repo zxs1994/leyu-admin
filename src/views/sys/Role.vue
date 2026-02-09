@@ -48,18 +48,12 @@ watch(
 )
 
 const columns = [
-	// {
-	// 	title: 'ID',
-	// 	dataIndex: 'id',
-	// 	align: 'center',
-	// 	width: 80,
-	// },
 	{
 		title: '#',
 		key: 'index',
 		align: 'center',
 		width: 60,
-		customRender: ({ index }) => index + 1,
+		customRender: ({ index }) => list.getIndex(index),
 	},
 	{
 		title: '名称',

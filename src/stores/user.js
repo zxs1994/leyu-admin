@@ -1,6 +1,5 @@
 import {
   ref,
-  // computed
 } from 'vue'
 import {
   defineStore
@@ -8,6 +7,9 @@ import {
 import {
   userApi
 } from '@/api'
+import {
+  getAvatarColor
+} from '@/utils'
 
 export const useUserStore = defineStore('user', () => {
   const userInfo = ref({})
@@ -19,6 +21,9 @@ export const useUserStore = defineStore('user', () => {
     response.value = res
     if (res.data) setUserInfoFlag = true
     userInfo.value = res.data || {}
+    if (userInfo.value.name) {
+      userInfo.value.color = getAvatarColor(userInfo.value.name)
+    }
     callback && callback()
     return res.data
   }
