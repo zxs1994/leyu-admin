@@ -58,7 +58,7 @@ const singleChild = computed(() => {
 	<!-- 无子路由 -->
 	<a-menu-item
 		v-else
-		:key="item.name">
+		:key="item.name || item.link">
 		<template #icon>
 			<component
 				v-if="item.meta?.icon"

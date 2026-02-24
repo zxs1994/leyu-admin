@@ -20,13 +20,14 @@ import sysRouter from './sysRouter'
 const Layout = () => import('@/layout/Layout.vue')
 import {
   HomeOutlined,
+  ReadOutlined,
 } from '@ant-design/icons-vue'
 
 const keepAlive = true
 const whiteList = true
 const isShowMenu = true
 
-const Home = {
+const HomeRouter = {
   path: '/',
   component: Layout,
   redirect: '/home',
@@ -45,15 +46,28 @@ const Home = {
     component: () => import('@/views/Home.vue'),
   }, ],
 }
+
+const SwaggerRouter = {
+  link: import.meta.env.VITE_BASE_API + '/swagger-ui/index.html',
+  meta: {
+    isShowMenu,
+    title: 'Swagger',
+    icon: ReadOutlined,
+  }
+}
+
 const routes = [
+  HomeRouter,
   sysRouter,
+  SwaggerRouter,
 ]
 
 const router = createRouter({
   history: createWebHistory(
     import.meta.env.BASE_URL),
   routes: [
-    Home, {
+    HomeRouter,
+    {
       path: '/login',
       name: 'Login',
       meta: {
@@ -178,5 +192,4 @@ export default router
 export {
   routes,
   filterRoutes,
-  Home as HomeRouter,
 }

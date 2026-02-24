@@ -10,7 +10,7 @@ import { useUserStore } from '@/stores/user'
 import UserModal from '@/components/UserModal.vue'
 import ChatModal from '@/components/ChatModal.vue'
 import SwichTenantModal from '@/components/SwichTenantModal.vue'
-import { HomeRouter, filterRoutes } from '@/router'
+import { filterRoutes } from '@/router'
 import { checkPermission } from '@/utils/permission'
 import { title } from '@/utils'
 
@@ -59,9 +59,9 @@ function findOpenKeys(name, menuList) {
 	return []
 }
 
-const routers = filterVisibleMenu([HomeRouter, ...filterRoutes]).filter((i) => i.children)
+const routers = filterVisibleMenu(filterRoutes).filter((i) => i)
 
-// console.log(routers)
+console.log(routers)
 
 const getSelectedKeys = () => {
 	return route.matched.map((i) => i.meta?.activeName || i.name)
@@ -71,7 +71,11 @@ const selectedKeys = ref([])
 const openKeys = ref([])
 
 const handleClick = (e) => {
-	router.push({ name: e.key })
+	if (e.key.startsWith(import.meta.env.VITE_BASE_API)) {
+		open(e.key)
+	} else {
+		router.push({ name: e.key })
+	}
 }
 const logout = async () => {
 	const timeoutMs = 400
@@ -146,7 +150,7 @@ watchEffect(() => {
 			@click="handleClick">
 			<MenuItem
 				v-for="item in routers"
-				:key="item.name"
+				:key="item.name || item.link"
 				:item="item" />
 		</a-menu>
 		<div
