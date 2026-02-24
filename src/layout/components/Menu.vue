@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watchEffect } from 'vue'
+import { ref, watchEffect, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { SwapOutlined, MenuUnfoldOutlined, MenuFoldOutlined, UserOutlined, LogoutOutlined } from '@ant-design/icons-vue'
 import MenuItem from './MenuItem.vue'
@@ -105,6 +105,21 @@ watchEffect(() => {
 	if (!collapsed.value) {
 		openKeys.value = findOpenKeys(name, routers)
 	}
+})
+
+// 浏览器切换 tab 时也执行 selectedKeys.value = getSelectedKeys()
+// 目的是不让link的菜单处于选中状态
+onMounted(() => {
+	const handleVisibility = () => {
+		if (document.visibilityState === 'visible') {
+			selectedKeys.value = getSelectedKeys()
+		}
+	}
+	document.addEventListener('visibilitychange', handleVisibility)
+
+	onUnmounted(() => {
+		document.removeEventListener('visibilitychange', handleVisibility)
+	})
 })
 </script>
 <template>
