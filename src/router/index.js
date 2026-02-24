@@ -18,10 +18,11 @@ import {
 import sysRouter from './sysRouter'
 
 const Layout = () => import('@/layout/Layout.vue')
+
 import {
   HomeOutlined,
-  ReadOutlined,
 } from '@ant-design/icons-vue'
+import swaggerIcon from '@/icons/swagger.svg'
 
 const keepAlive = true
 const whiteList = true
@@ -52,7 +53,7 @@ const SwaggerRouter = {
   meta: {
     isShowMenu,
     title: 'Swagger',
-    icon: ReadOutlined,
+    icon: swaggerIcon,
   }
 }
 
