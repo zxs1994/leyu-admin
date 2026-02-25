@@ -28,7 +28,7 @@ const keepAlive = true
 const whiteList = true
 const isShowMenu = true
 
-const HomeRouter = {
+const homeRouter = {
   path: '/',
   component: Layout,
   redirect: '/home',
@@ -48,7 +48,7 @@ const HomeRouter = {
   }, ],
 }
 
-const SwaggerRouter = {
+const swaggerMenu = {
   link: import.meta.env.VITE_BASE_API + '/swagger-ui/index.html',
   meta: {
     isShowMenu,
@@ -58,9 +58,9 @@ const SwaggerRouter = {
 }
 
 const routes = [
-  HomeRouter,
+  homeRouter,
   sysRouter,
-  SwaggerRouter,
+  swaggerMenu,
 ]
 
 const router = createRouter({
