@@ -70,10 +70,18 @@ export const useSysSetingStore = defineStore('sysSeting', () => {
       playFlapEffect(nextIsDark, token, duration)
     }
     setTimeout(() => {
+      const root = document.documentElement
+      root.classList.toggle('dark', nextIsDark)
       currentAlgorithm.value = algorithm
       applyAntdTokenVars(nextIsDark, token)
-      currentIsDark.value = isDark
+      currentIsDark.value = nextIsDark
       firstRun = false
+
+      // 同步 DevTools 主题
+      if (window.__VUE_DEVTOOLS_GLOBAL_HOOK__) {
+        localStorage.setItem('__vue-devtools-theme__', nextIsDark ? 'dark' : 'light')
+      }
+
     }, firstRun ? 0 : duration * 0.52) // 首次无延迟，后续有动画延迟
   }
 
