@@ -12,12 +12,12 @@ export default function useCrudList({
   otherQuery = {},
   firstGet = true,
   pageSize = 12,
-  scroller = '.layout-content'
+  scroller = '.layout-content',
 }) {
   const route = useRoute()
   const router = useRouter()
-  const page = route.query.page ? (parseInt(route.query.page) || 1) : 1
-  const size = route.query.size ? (parseInt(route.query.size) || pageSize) : pageSize
+  const page = route.query.page ? parseInt(route.query.page) || 1 : 1
+  const size = route.query.size ? parseInt(route.query.size) || pageSize : pageSize
   const state = reactive({
     loading: false,
     dataSource: [],
@@ -40,11 +40,14 @@ export default function useCrudList({
       current,
       pageSize
     } = state.pagination
+    const filteredQuery = Object.fromEntries(Object.entries(state.query).filter(([, value]) => value !== undefined))
     const params = new URLSearchParams({
-      ...state.query,
+      ...filteredQuery,
       page: current.toString(),
       size: pageSize.toString(),
     }).toString()
+
+    // console.log(params)
 
     const newUrl = `${window.location.pathname}?${params}`
     window.history.replaceState({}, '', newUrl) // ✅ 只替换 URL，不刷新页面
@@ -53,7 +56,8 @@ export default function useCrudList({
   const scrollToTop = () => {
     nextTick(() => {
       if (scroller) {
-        document.querySelector(scroller).scrollTop = 0
+        ;
+        (document.querySelector(scroller) || {}).scrollTop = 0
       }
     })
   }
@@ -92,7 +96,7 @@ export default function useCrudList({
   }
   const resetQuery = () => {
     state.query = {
-      ...otherQuery
+      ...otherQuery,
     }
     search()
   }
