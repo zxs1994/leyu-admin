@@ -7,6 +7,21 @@ import {
   useRouter
 } from 'vue-router'
 
+const normalizeRouteQueryValue = (value) => {
+  const raw = Array.isArray(value) ? value[0] : value
+
+  if (raw === 'true') return true
+  if (raw === 'false') return false
+  if (raw === 'null') return null
+  if (raw === 'undefined') return undefined
+  if (typeof raw === 'string' && /^-?\d+(\.\d+)?$/.test(raw)) return Number(raw)
+
+  return raw
+}
+
+const normalizeRouteQuery = (query) =>
+  Object.fromEntries(Object.entries(query).map(([key, value]) => [key, normalizeRouteQueryValue(value)]))
+
 export default function useCrudList({
   api,
   otherQuery = {},
@@ -18,11 +33,12 @@ export default function useCrudList({
   const router = useRouter()
   const page = route.query.page ? parseInt(route.query.page) || 1 : 1
   const size = route.query.size ? parseInt(route.query.size) || pageSize : pageSize
+  const normalizedRouteQuery = normalizeRouteQuery(route.query)
   const state = reactive({
     loading: false,
     dataSource: [],
     query: {
-      ...route.query,
+      ...normalizedRouteQuery,
       ...otherQuery,
     },
     pagination: {

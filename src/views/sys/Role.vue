@@ -67,11 +67,11 @@ const columns = [
 		title: '权限',
 		dataIndex: 'permissions',
 	},
-	// {
-	// 	title: '来源',
-	// 	dataIndex: 'source',
-	// 	align: 'center',
-	// },
+	{
+		title: '来源',
+		dataIndex: 'source',
+		align: 'center',
+	},
 	{
 		title: '创建时间',
 		dataIndex: 'createdAt',

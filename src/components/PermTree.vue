@@ -56,7 +56,7 @@ const onChildChange = (item) => {
 
 	if (item.checked && pageMatch) {
 		// 在路由里找 perm 前缀匹配的页面/树/其他权限
-		const matchedRoute = allRoutes.find((r) => {
+		const matchedRoute = props.allRoutes.find((r) => {
 			const perm = r.meta?.perm
 			if (!perm) return false
 			// 操作权限前缀匹配页面权限
@@ -101,10 +101,7 @@ const onChildChange = (item) => {
 					<template #title>
 						<div class="text-xs leading-5 space-y-0.5 max-w-xs">
 							<div><span class="text-gray-200">编码：</span>{{ item.code }}</div>
-							<div>
-								<span class="text-gray-200">级别：</span
-								>{{ enums.all.authLevel?.find((i) => i.code == item.authLevel)?.desc }}
-							</div>
+							<div><span class="text-gray-200">级别：</span>{{ enums.all.authLevel?.find((i) => i.code == item.authLevel)?.desc }}</div>
 							<div><span class="text-gray-200">请求：</span>{{ item.method }} {{ item.path }}</div>
 							<div><span class="text-gray-200">状态：</span>{{ item.status ? '启用' : '停用' }}</div>
 						</div>

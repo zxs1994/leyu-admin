@@ -17,6 +17,9 @@ import {
 } from '../utils/permission'
 import sysRouter from './sysRouter'
 
+nProgress.configure({
+  showSpinner: false
+})
 const Layout = () => import('@/layout/Layout.vue')
 
 import {

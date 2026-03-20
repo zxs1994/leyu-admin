@@ -30,8 +30,8 @@ const singleChild = computed(() => {
 		:key="singleChild.name">
 		<template #icon>
 			<component
-				v-if="item.meta?.icon || singleChild.meta?.icon"
-				:is="item.meta?.icon || singleChild.meta.icon" />
+				v-if="singleChild.meta?.icon || item.meta?.icon"
+				:is="singleChild.meta?.icon || item.meta.icon" />
 		</template>
 		{{ singleChild.meta?.title }}
 	</a-menu-item>
