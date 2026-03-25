@@ -38,12 +38,12 @@ const homeRouter = {
   meta: {
     isShowMenu,
     icon: HomeOutlined,
+    title: '主页',
   },
   children: [{
     path: 'home',
     name: 'Home',
     meta: {
-      title: '主页',
       keepAlive,
       isShowMenu
     },

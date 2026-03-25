@@ -30,10 +30,10 @@ const singleChild = computed(() => {
 		:key="singleChild.name">
 		<template #icon>
 			<component
-				v-if="singleChild.meta?.icon || item.meta?.icon"
-				:is="singleChild.meta?.icon || item.meta.icon" />
+				v-if="item.meta?.icon"
+				:is="item.meta?.icon" />
 		</template>
-		{{ singleChild.meta?.title }}
+		{{ item.meta?.title }}
 	</a-menu-item>
 
 	<!-- 多个子路由：SubMenu -->
