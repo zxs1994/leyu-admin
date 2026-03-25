@@ -36,8 +36,10 @@ export const gotoLogin = (immediatelyow = false) => {
   removeRefreshToken()
 
   function toLogin() {
-    if (location.pathname !== '/login') {
-      window.location.href = '/login?redirect=' + encodeURIComponent(location.pathname + location.search)
+    if (location.pathname !==
+      import.meta.env.VITE_BASE_URL + '/login') {
+      window.location.href =
+        import.meta.env.VITE_BASE_URL + '/login?redirect=' + encodeURIComponent(location.pathname + location.search)
     }
   }
   if (immediatelyow) {
