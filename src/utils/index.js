@@ -44,6 +44,12 @@ const withBase = (path) => {
   return `${normalizedBase}${normalizedPath}` || '/'
 }
 
+const stripBaseFromPathname = (pathname) => {
+  if (!normalizedBase) return pathname
+  if (pathname === normalizedBase) return '/'
+  return pathname.startsWith(`${normalizedBase}/`) ? pathname.slice(normalizedBase.length) : pathname
+}
+
 export const gotoLogin = (immediatelyow = false) => {
   removeToken()
   removeRefreshToken()
@@ -51,8 +57,8 @@ export const gotoLogin = (immediatelyow = false) => {
   function toLogin() {
     const loginPath = withBase('/login')
     if (location.pathname !== loginPath) {
-      window.location.href =
-        loginPath + '?redirect=' + encodeURIComponent(location.pathname + location.search)
+      const redirectPath = stripBaseFromPathname(location.pathname) + location.search
+      window.location.href = loginPath + '?redirect=' + encodeURIComponent(redirectPath)
     }
   }
   if (immediatelyow) {

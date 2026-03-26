@@ -1,15 +1,17 @@
 <template>
 	<Editor
+		:key="editorRenderKey"
 		v-model="content"
-		:tinymce-script-src="'/tinymce/tinymce.min.js'"
+		:tinymce-script-src="tinymceScriptSrc"
 		:init="initOptions"
 		:disabled="props.readonly"
-		initial-value="Welcome to TinyMCE!"
 		:class="{ 'editor-readonly': props.readonly }" />
 </template>
 <script setup>
-import { ref, watch } from 'vue'
+import { computed, nextTick, ref, watch } from 'vue'
+import { storeToRefs } from 'pinia'
 import Editor from '@tinymce/tinymce-vue'
+import { useSysSetingStore } from '@/stores/sysSeting'
 // import { uploadFile } from '@/utils/cos'
 const props = defineProps({
 	modelValue: String,
@@ -19,17 +21,47 @@ const props = defineProps({
 })
 const emit = defineEmits(['update:modelValue'])
 
+const normalizedBase = (import.meta.env.BASE_URL || '/').replace(/\/+$/, '')
+const tinymceBaseUrl = `${normalizedBase}/tinymce`
+const tinymceScriptSrc = `${tinymceBaseUrl}/tinymce.min.js`
+
+const sysSetingStore = useSysSetingStore()
+const { currentIsDark } = storeToRefs(sysSetingStore)
+
+const editorRef = ref(null)
+const editorRenderKey = ref(0)
+const isRebuilding = ref(false)
+const pendingContent = ref(null)
+
 const content = ref(props.modelValue)
 
 watch(
 	() => props.modelValue,
 	(val) => {
 		if (val !== content.value) content.value = val
-	}
+	},
 )
 watch(content, (val) => {
 	emit('update:modelValue', val)
 })
+
+watch(
+	currentIsDark,
+	async (isDark, oldDark) => {
+		if (isDark === oldDark || isRebuilding.value) return
+		if (!editorRef.value) return
+
+		isRebuilding.value = true
+		pendingContent.value = editorRef.value.getContent({ format: 'raw' })
+		editorRef.value.remove()
+		editorRef.value = null
+
+		await nextTick()
+		editorRenderKey.value += 1
+		isRebuilding.value = false
+	},
+	{ flush: 'post' },
+)
 
 function applyImageStyle(img) {
 	img.style.maxWidth = '100%'
@@ -39,14 +71,24 @@ function applyImageStyle(img) {
 	// img.style.margin = '0 auto'
 }
 
-const initOptions = {
+const initOptions = computed(() => ({
 	license_key: 'gpl', // 👈 避免授权提示
 	promotion: false, // 👈 隐藏右上角 “Get all features”
 	branding: false, // 👈 隐藏 “Build with TinyMCE”
 	language: 'zh_CN',
-	// language_url: '/tinymce/langs/zh_CN.js',
-	// skin_url: '/tinymce/skins/ui/oxide',
-	// content_css: '/tinymce/skins/content/default/content.css',
+	base_url: tinymceBaseUrl,
+	suffix: '.min',
+	skin_url: `${tinymceBaseUrl}/skins/ui/${currentIsDark.value ? 'oxide-dark' : 'oxide'}`,
+	content_css: `${tinymceBaseUrl}/skins/content/${currentIsDark.value ? 'dark' : 'default'}/content.min.css`,
+	setup: (editor) => {
+		editorRef.value = editor
+		editor.on('init', () => {
+			if (pendingContent.value !== null) {
+				editor.setContent(pendingContent.value)
+				pendingContent.value = null
+			}
+		})
+	},
 	height: props.height,
 	menubar: true,
 	plugins: [
@@ -55,7 +97,7 @@ const initOptions = {
 		'autolink', // 自动识别链接
 		'lists', // 有序/无序列表支持
 		'link', // 插入/编辑链接
-		'image', // 插入/编辑图片
+		// 'image', // 插入/编辑图片
 		'media', // 插入视频/音频
 		'charmap', // 特殊字符插入（©®♥等）
 		'anchor', // 锚点，页面内跳转
@@ -74,7 +116,7 @@ const initOptions = {
 		'emoticons', // 插入表情符号
 		// 'emojis', // 插入 emoji（更现代的表情支持）
 		// 'spellchecker', // 拼写检查（需要后台支持）
-		'quickbars', // 快速工具条（悬浮格式工具）
+		// 'quickbars', // 快速工具条（悬浮格式工具）
 		// 'template', // 内容模板功能
 		// 'toc', // 目录生成（基于标题结构）
 		// 'directionality', // 设置文本方向（LTR 或 RTL）
@@ -83,34 +125,34 @@ const initOptions = {
 		// 'textpattern', // 自动文本模式（如输入 `--` 自动变长破折号）
 		// 'mentions', // @提及功能（需配合服务端支持）
 	],
-	toolbar: 'undo redo | styles | bold italic forecolor codesample image link preview fullscreen', // save
+	// toolbar: 'undo redo | styles | bold italic forecolor codesample image link preview fullscreen', // save
 	// contextmenu: 'link',
 	placeholder: props.readonly ? '' : props.placeholder || '请输入内容...',
-	// images_upload_handler: (blobInfo, progress) => {
-	// 	// oxlint-disable-next-line
-	// 	return new Promise(async (resolve, reject) => {
-	// 		try {
-	// 			const file = blobInfo.blob()
-	// 			const onProgress = (data) => {
-	// 				const percent = Math.floor(data.percent || 0) * 100
-	// 				progress(percent)
-	// 			}
+	images_upload_handler: (blobInfo, progress) => {
+		// 	// oxlint-disable-next-line
+		return new Promise(async (resolve, reject) => {
+			// 		try {
+			// 			const file = blobInfo.blob()
+			// 			const onProgress = (data) => {
+			// 				const percent = Math.floor(data.percent || 0) * 100
+			// 				progress(percent)
+			// 			}
 
-	// 			const res = await uploadFile({ file, onProgress })
+			// 			const res = await uploadFile({ file, onProgress })
 
-	// 			if (!res || !res.tempUrl) {
-	// 				reject({ message: '上传失败：返回 URL 无效', remove: true })
-	// 				return
-	// 			}
-	// 			resolve(res.tempUrl)
-	// 		} catch (err) {
-	// 			console.error('图片上传失败:', err)
-	// 			reject({
-	// 				message: '图片上传失败，请重试',
-	// 				remove: true,
-	// 			})
-	// 		}
-	// 	})
-	// },
-}
+			// 			if (!res || !res.tempUrl) {
+			// 				reject({ message: '上传失败：返回 URL 无效', remove: true })
+			// 				return
+			// 			}
+			// 			resolve(res.tempUrl)
+			// 		} catch (err) {
+			// 			console.error('图片上传失败:', err)
+			reject({
+				message: '请使用链接方式插入图片',
+				remove: true,
+			})
+			// 		}
+		})
+	},
+}))
 </script>
