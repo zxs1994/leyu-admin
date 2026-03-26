@@ -67,8 +67,9 @@ const routes = [
 ]
 
 const router = createRouter({
+  // 值来自 Vite 配置里的 base URL，默认为 '/'
   history: createWebHistory(
-    import.meta.env.VITE_BASE_URL),
+    import.meta.env.BASE_URL),
   routes: [
     homeRouter,
     {

@@ -31,15 +31,28 @@ export function removeRefreshToken() {
   return localStorage.removeItem(REFRESH_TOKEN_KEY)
 }
 
+const normalizedBase = (() => {
+  const rawBase =
+    import.meta.env.BASE_URL ||
+    import.meta.env.VITE_BASE_URL || '/'
+  const withLeadingSlash = rawBase.startsWith('/') ? rawBase : `/${rawBase}`
+  return withLeadingSlash.replace(/\/+$/, '')
+})()
+
+const withBase = (path) => {
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`
+  return `${normalizedBase}${normalizedPath}` || '/'
+}
+
 export const gotoLogin = (immediatelyow = false) => {
   removeToken()
   removeRefreshToken()
 
   function toLogin() {
-    if (location.pathname !==
-      import.meta.env.VITE_BASE_URL + '/login') {
+    const loginPath = withBase('/login')
+    if (location.pathname !== loginPath) {
       window.location.href =
-        import.meta.env.VITE_BASE_URL + '/login?redirect=' + encodeURIComponent(location.pathname + location.search)
+        loginPath + '?redirect=' + encodeURIComponent(location.pathname + location.search)
     }
   }
   if (immediatelyow) {
