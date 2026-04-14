@@ -22,9 +22,11 @@ let refreshingPromise = null
 
 const transformData = (data, obj) => {
   if (!data) return {} // 如果数据不存在，直接返回
+  if (data instanceof Blob) return data // 如果是文件流，直接返回
+  if (typeof data !== 'object') return data // 如果不是对象，直接返回
   const result = {
     ...data,
-    ...obj
+    ...obj,
   }
   if (!data.createdAt && !data.updatedAt) {
     return result
@@ -40,7 +42,7 @@ const transformRes = (res, obj) => {
   if (Array.isArray(data)) {
     return {
       ...res,
-      data: data.map(i => transformData(i, obj))
+      data: data.map((i) => transformData(i, obj)),
     }
   }
   if (res.data?.records) {
@@ -49,13 +51,13 @@ const transformRes = (res, obj) => {
       ...res,
       data: {
         ...res.data,
-        records: res.data.records.map(i => transformData(i, obj))
-      }
+        records: res.data.records.map((i) => transformData(i, obj)),
+      },
     }
   }
   return {
     ...res,
-    data: transformData(data, obj)
+    data: transformData(data, obj),
   }
 }
 
@@ -79,7 +81,7 @@ axiosInstance.interceptors.request.use(async function (config) {
 })
 
 axiosInstance.interceptors.response.use(
-  async res => {
+  async (res) => {
       const responseType = res.request?.responseType
 
       // 如果是下载文件，直接返回原始响应
@@ -121,21 +123,18 @@ axiosInstance.interceptors.response.use(
             if (!refreshingPromise) {
               refreshingPromise = authApi
                 .refresh({
-                  refreshToken
+                  refreshToken,
                 }, {
-                  __isRefreshRequest: true
-                })
+                  __isRefreshRequest: true,
+                }, )
                 .finally(() => {
                   refreshingPromise = null
                 })
             }
 
             const refreshRes = await refreshingPromise
-            setToken(refreshRes)
-            return axiosInstance({
-              ...config,
-              __isRefreshRequest: true,
-            })
+            setToken(refreshRes.data)
+            return axiosInstance(config)
           } catch (e) {
             console.error('refresh token error:', e)
             removeRefreshToken()
@@ -165,7 +164,7 @@ axiosInstance.interceptors.response.use(
 export function get(path, params = undefined, config = {}) {
   return axiosInstance.get(path, {
     params,
-    ...config
+    ...config,
   })
 }
 
