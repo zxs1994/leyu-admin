@@ -46,6 +46,7 @@ const handleModalOk = async () => {
 		const res = await userApi.updateUserInfo({
 			id: formState.id,
 			name: formState.name,
+			email: formState.email,
 			password: formState.password,
 		})
 		modalLoading.value = false
