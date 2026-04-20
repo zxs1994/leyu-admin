@@ -131,7 +131,7 @@ const columns = [
 		),
 	},
 	{
-		title: '登录登出',
+		title: 'token版本',
 		dataIndex: 'tokenVersion',
 	},
 	{
@@ -221,7 +221,6 @@ const actions = computed(() => {
 					name="email"
 					hasFeedback>
 					<a-input
-						:disabled="!!modal.state.updateId"
 						v-model:value.trim="modal.state.formState.email"
 						placeholder="请输入邮箱" />
 				</a-form-item>

@@ -133,7 +133,7 @@ const columns = [
 		),
 	},
 	{
-		title: '登录登出',
+		title: 'token版本',
 		dataIndex: 'tokenVersion',
 	},
 ]

@@ -24,6 +24,7 @@ const Layout = () => import('@/layout/Layout.vue')
 
 import {
   HomeOutlined,
+  AimOutlined
 } from '@ant-design/icons-vue'
 import swaggerIcon from '@/icons/swagger.svg'
 
@@ -51,6 +52,25 @@ const homeRouter = {
   }, ],
 }
 
+const dataScopeTestRouter = {
+  path: '/data-scope-test',
+  component: Layout,
+  meta: {
+    isShowMenu,
+    icon: AimOutlined,
+    title: '数据权限测试',
+  },
+  children: [{
+    path: '',
+    name: 'DataScopeTest',
+    meta: {
+      keepAlive,
+      isShowMenu
+    },
+    component: () => import('@/views/DataScopeTest.vue'),
+  }, ],
+}
+
 const swaggerMenu = {
   link: import.meta.env.VITE_BASE_API + '/swagger-ui/index.html',
   meta: {
@@ -64,6 +84,7 @@ const routes = [
   homeRouter,
   sysRouter,
   swaggerMenu,
+  dataScopeTestRouter
 ]
 
 const router = createRouter({

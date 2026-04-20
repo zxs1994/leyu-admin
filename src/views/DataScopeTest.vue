@@ -1,29 +1,19 @@
 <script setup lang="jsx">
 import { ref, computed, watch } from 'vue'
 import Rules from '@/utils/rules'
-import { roleApi as api } from '@/api'
+import { dataScopeTestApi as api } from '@/api'
 import useCrudList from '@/composables/useCrudList'
 import useCrudModal from '@/composables/useCrudModal'
 import useCrudAction from '@/composables/useCrudAction'
-import PermTree from '@/components/PermTree.vue'
 import { checkPermission } from '@/utils/permission'
-import { routes } from '@/router'
-import { useEnumsStore } from '@/stores/enums'
 
-const enums = useEnumsStore()
-const flattenRoutes = (routes) => {
-	return routes.flatMap((r) => [r, ...(r.children ? flattenRoutes(r.children) : [])])
-}
-
-const allRoutes = flattenRoutes(routes)
-
-const title = '角色'
-const baseCode = 'sys:role'
+const title = '数据权限测试'
+const baseCode = 'data-scope-test'
 
 const list = useCrudList({ api })
 const modal = useCrudModal({
 	api,
-	initForm: () => ({ name: '', dataScope: '', permissionIds: [] }),
+	initForm: () => ({ name: '' }),
 	reload: list.reload,
 })
 const action = useCrudAction({
@@ -40,15 +30,6 @@ const handleAdd = () => {
 	modal.openAdd()
 }
 
-watch(
-	() => modal.state.open,
-	(val) => {
-		if (val) {
-			getPermissionTree()
-		}
-	},
-)
-
 const columns = [
 	{
 		title: '#',
@@ -61,27 +42,13 @@ const columns = [
 		title: '名称',
 		dataIndex: 'name',
 	},
-	// {
-	// 	title: '编码',
-	// 	dataIndex: 'code',
-	// },
 	{
-		title: '数据权限',
-		dataIndex: 'dataScope',
-		customRender: ({ text }) => (
-			<a-tag color="processing" bordered={false}>
-				{enums.all.dataScopeType.find((i) => i.code === text)?.desc || text }
-			</a-tag>
-		),
+		title: '部门ID',
+		dataIndex: 'deptId',
 	},
 	{
-		title: '功能权限',
-		dataIndex: 'permissions',
-	},
-	{
-		title: '来源',
-		dataIndex: 'source',
-		align: 'center',
+		title: '创建者ID',
+		dataIndex: 'creatorId',
 	},
 	{
 		title: '创建时间',
@@ -103,29 +70,6 @@ const columns = [
 
 const rules = {
 	name: Rules.name,
-	dataScope: [
-		{
-			required: true,
-			message: '请选择数据权限',
-			trigger: ['blur'],
-		},
-	],
-	permissionIds: [
-		{
-			required: true,
-			message: '请选择功能权限',
-			trigger: ['blur'],
-		},
-	],
-}
-
-const tree = ref([])
-const getPermissionTree = () => {
-	api.getPermissionTree().then((res) => {
-		if (res.success) {
-			tree.value = res.data
-		}
-	})
 }
 
 const actions = computed(() => {
@@ -170,35 +114,6 @@ const actions = computed(() => {
 					<a-input
 						v-model:value.trim="modal.state.formState.name"
 						placeholder="请输入名称" />
-				</a-form-item>
-				<a-form-item
-					label="数据权限"
-					name="dataScope"
-					hasFeedback>
-					<a-select
-						:disabled="modal.state.record.source == 'SYSTEM'"
-						v-model:value="modal.state.formState.dataScope"
-						placeholder="请选择数据权限"
-						>
-						<a-select-option
-							v-for="i in enums.all.dataScopeType"
-							:key="i.code"
-							:value="i.code">
-							{{ i.desc }}
-						</a-select-option>
-					</a-select>
-				</a-form-item>
-				<a-form-item
-					label="功能权限"
-					name="permissionIds"
-					hasFeedback>
-					<div class="max-h-150 overflow-auto border border-(--ui-border) p-2 rounded-md">
-						<PermTree
-							v-model="modal.state.formState.permissionIds"
-							:tree="tree"
-							:allRoutes="allRoutes" />
-					</div>
-
 				</a-form-item>
 			</a-form>
 			<template #extra>
@@ -245,35 +160,6 @@ const actions = computed(() => {
 				</a-space></template
 			>
 			<template #bodyCell="{ column, record }">
-				<template v-if="column.dataIndex === 'permissions'">
-					<a-tag
-						v-for="p in record.permissions.slice(0, 3)"
-						:bordered="false"
-						:color="p.status ? 'processing' : 'error'"
-						:key="p.id">
-						{{ p.name }}
-					</a-tag>
-
-					<a-tooltip placement="top">
-						<template #title>
-							<div class="flex gap-y-2 flex-wrap">
-								<a-tag
-									v-for="p in record.permissions.slice(3)"
-									:key="p.id"
-									:bordered="false"
-									:color="p.status ? 'processing' : 'error'"">
-									{{ p.name }}
-								</a-tag>
-							</div>
-						</template>
-						<a-tag
-							class="cursor-pointer"
-							v-if="record.permissions.length > 3"
-							:bordered="false">
-							+{{ record.permissions.length - 3 }}
-						</a-tag>
-					</a-tooltip>
-				</template>
 				<template v-if="column.dataIndex === 'action'">
 					<a-space :size="0">
 						<template #split>
