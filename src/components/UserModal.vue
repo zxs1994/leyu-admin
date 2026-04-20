@@ -81,7 +81,6 @@ const handleModalOk = async () => {
 				hasFeedback>
 				<a-input
 					v-model:value="formState.email"
-					disabled
 					placeholder="请输入邮箱" />
 			</a-form-item>
 			<a-form-item
