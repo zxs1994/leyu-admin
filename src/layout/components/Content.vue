@@ -26,7 +26,7 @@ watchEffect(route, () => {
 	</a-layout-content>
 </template>
 <style lang="less" scoped>
-.layout-content {
+.layout-content > .CONTENT {
 	padding: 20px;
 }
 </style>
