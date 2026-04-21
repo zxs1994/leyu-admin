@@ -59,6 +59,13 @@ const applyAntdTokenVars = (isDark, token) => {
 export const useSysSetingStore = defineStore('sysSeting', () => {
   const currentAlgorithm = ref(defaultAlgorithm)
   const currentIsDark = ref(false)
+  const collapsed = ref(localStorage.getItem('collapsed') ? JSON.parse(localStorage.getItem('collapsed')) : false)
+
+  const collapseChange = (val) => {
+    localStorage.setItem('collapsed', val)
+    collapsed.value = val
+  }
+
   let firstRun = true
 
   const updateAlgorithm = (isDark) => {
@@ -92,6 +99,8 @@ export const useSysSetingStore = defineStore('sysSeting', () => {
   return {
     currentAlgorithm,
     currentIsDark,
+    collapsed,
+    collapseChange,
     updateAlgorithm,
     toggleDark
   }

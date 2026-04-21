@@ -202,7 +202,7 @@ const actions = computed(() => {
 })
 </script>
 <template>
-	<div class="user">
+	<div>
 		<a-modal
 			v-model:open="modal.state.open"
 			:title="modal.state.updateId ? `编辑${title}` : `新建${title}`"

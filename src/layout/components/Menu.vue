@@ -1,26 +1,17 @@
 <script setup>
 import { ref, watchEffect, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { SwapOutlined, MenuUnfoldOutlined, MenuFoldOutlined, UserOutlined, LogoutOutlined } from '@ant-design/icons-vue'
 import MenuItem from './MenuItem.vue'
-import robot from '@/icons/robot.svg'
-import { authApi } from '@/api'
-import { gotoLogin } from '@/utils'
-import { useUserStore } from '@/stores/user'
-import UserModal from '@/components/UserModal.vue'
-import ChatModal from '@/components/ChatModal.vue'
-import SwichTenantModal from '@/components/SwichTenantModal.vue'
 import { filterRoutes } from '@/router'
-import { checkPermission } from '@/utils/permission'
 import { title } from '@/utils'
+import { storeToRefs } from 'pinia'
+import { useSysSetingStore } from '@/stores/sysSeting'
 
-const userStore = useUserStore()
+const sysSetingStore = useSysSetingStore()
+const { collapsed } = storeToRefs(sysSetingStore)
+
 const route = useRoute()
 const router = useRouter()
-const showUserModal = ref(false)
-const showSwichTenantModal = ref(false)
-const chatModalRef = ref()
-const logoutLoading = ref(false)
 
 function filterVisibleMenu(routes) {
 	return routes
@@ -77,25 +68,6 @@ const handleClick = (e) => {
 		router.push({ name: e.key })
 	}
 }
-const logout = async () => {
-	const timeoutMs = 400
-	logoutLoading.value = true
-	try {
-		await Promise.race([authApi.logout(), new Promise((resolve) => setTimeout(resolve, timeoutMs))])
-	} catch (e) {
-		console.log(e)
-	} finally {
-		logoutLoading.value = false
-		// 跳转到登录页
-		gotoLogin(true)
-	}
-}
-
-const collapsed = ref(localStorage.getItem('collapsed') ? JSON.parse(localStorage.getItem('collapsed')) : false)
-const collapseChange = (val) => {
-	localStorage.setItem('collapsed', val)
-	collapsed.value = val
-}
 
 // 刷新页面时计算选中和展开
 // watchEffect 会首次立即执行，也会在依赖变化时执行
@@ -127,23 +99,6 @@ onMounted(() => {
 		theme="light"
 		v-model:collapsed="collapsed"
 		:collapsed-width="60">
-		<!-- 只有点击后才渲染 -->
-		<UserModal
-			v-if="showUserModal"
-			@close="showUserModal = false" />
-		<SwichTenantModal
-			v-if="showSwichTenantModal"
-			@close="showSwichTenantModal = false" />
-		<ChatModal ref="chatModalRef" />
-		<div
-			class="toggleMenu"
-			@click="collapseChange(!collapsed)">
-			<a-button
-				type="dashed"
-				shape="circle">
-				<component :is="collapsed ? MenuUnfoldOutlined : MenuFoldOutlined" />
-			</a-button>
-		</div>
 		<div
 			class="logo-box border-(--ui-border-secondary) border-e border-b"
 			:class="collapsed ? 'py-2.5' : 'p-2.5'">
@@ -168,61 +123,17 @@ onMounted(() => {
 				:key="item.name || item.link"
 				:item="item" />
 		</a-menu>
-		<div
+		<!-- <div
 			class="foot flex-nowrap! overflow-hidden 1px solid border-(--ui-border-secondary) border-e"
 			:style="{
 				flexDirection: collapsed ? 'column-reverse' : 'row',
 			}">
-			<a-dropdown :trigger="['click']">
-				<a-avatar :style="{ 'background-color': userStore.userInfo.color, cursor: 'pointer' }">
-					{{ userStore.userInfo.name }}
-				</a-avatar>
-
-				<template #overlay>
-					<a-menu>
-						<a-menu-item v-if="checkPermission('platform:tenant:list')">
-							<div
-								class="flex items-center gap-2"
-								@click="showSwichTenantModal = true">
-								<SwapOutlined /> 切换租户
-							</div>
-						</a-menu-item>
-
-						<a-menu-item>
-							<div
-								class="flex items-center gap-2"
-								@click="showUserModal = true">
-								<UserOutlined /> 个人信息
-							</div>
-						</a-menu-item>
-
-						<a-menu-divider />
-
-						<a-menu-item>
-							<a-spin :spinning="logoutLoading">
-								<div
-									class="flex items-center gap-2"
-									@click="logout">
-									<LogoutOutlined /> 退出登录
-								</div>
-							</a-spin>
-						</a-menu-item>
-					</a-menu>
-				</template>
-			</a-dropdown>
 			<div
 				class="flex"
 				:style="{
 					flexDirection: collapsed ? 'column-reverse' : 'row',
-				}">
-				<a-button
-					type="text"
-					class="but"
-					@click="chatModalRef.open = true">
-					<robot />
-				</a-button>
-			</div>
-		</div>
+				}"></div>
+		</div> -->
 	</a-layout-sider>
 </template>
 <style lang="less" scoped>
@@ -231,19 +142,6 @@ onMounted(() => {
 	flex-direction: column;
 	height: 100vh;
 	justify-content: space-between;
-	&:hover {
-		.toggleMenu {
-			display: flex;
-		}
-	}
-	.toggleMenu {
-		display: none;
-		position: absolute;
-		top: 50%;
-		right: 0;
-		transform: translate(50%, -50%);
-		z-index: 1;
-	}
 	.logo-box {
 		display: flex;
 		align-items: center;

@@ -17,7 +17,7 @@
 		</RouterView>
 	</a-layout-content>
 </template>
-<style lang="less" scoped>
+<style lang="less">
 .layout-content > .CONTENT {
 	padding: 20px;
 }
