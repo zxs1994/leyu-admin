@@ -81,15 +81,15 @@ const logout = async () => {
 				@click="sysSetingStore.toggleDark">
 				<SunIcon
 					v-if="currentIsDark"
-					class="h-7 w-7" />
+					class="h-6 w-6" />
 				<MoonIcon
 					v-else
-					class="h-7 w-7" />
+					class="h-6 w-6" />
 			</a-button>
 			<a-dropdown :trigger="['click']">
 				<a-avatar
 					:style="{ 'background-color': userStore.userInfo.color, cursor: 'pointer' }"
-					:size="40"
+					:size="35"
 					class="ml-2!">
 					{{ avatarText }}
 				</a-avatar>
