@@ -3,7 +3,7 @@ import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useSysSetingStore } from '@/stores/sysSeting'
-import { MenuUnfoldOutlined, MenuFoldOutlined, SwapOutlined, UserOutlined, LogoutOutlined } from '@ant-design/icons-vue'
+import { MenuUnfoldOutlined, MenuFoldOutlined, SwapOutlined, UserOutlined, LogoutOutlined, CaretDownOutlined } from '@ant-design/icons-vue'
 import SunIcon from '@/icons/sun.svg'
 import MoonIcon from '@/icons/moon.svg'
 import RobotIcon from '@/icons/robot.svg'
@@ -29,11 +29,16 @@ const route = useRoute()
 const pageTitle = computed(() => route.meta?.title || '乐羽')
 const themeButtonTitle = computed(() => (currentIsDark.value ? '切换浅色模式' : '切换暗黑模式'))
 const avatarText = computed(() => {
-	const name = (userStore.userInfo.name || '').trim()
+	const name = (userStore.userInfo.name || '').toUpperCase()
 	if (!name) {
 		return '?'
 	}
-	return Array.from(name).slice(0, 3).join('')
+	const font = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+	const text = Array.from(name).slice(0, 1).join('')
+	if (font.includes(text)) {
+		return font[font.indexOf(text)]
+	}
+	return text
 })
 
 const logout = async () => {
@@ -87,12 +92,14 @@ const logout = async () => {
 					class="h-6 w-6" />
 			</a-button>
 			<a-dropdown :trigger="['click']">
-				<a-avatar
-					:style="{ 'background-color': userStore.userInfo.color, cursor: 'pointer' }"
-					:size="35"
-					class="ml-2!">
-					{{ avatarText }}
-				</a-avatar>
+				<div class="ml-2 flex cursor-pointer items-center gap-2 hover:opacity-90 active:opacity-100">
+					<a-avatar
+						:style="{ 'background-color': userStore.userInfo.color, cursor: 'pointer' }"
+						:size="35">
+						{{ avatarText }}
+					</a-avatar>
+					<span class="font-medium">{{ userStore.userInfo.name }} <CaretDownOutlined /></span>
+				</div>
 
 				<template #overlay>
 					<a-menu>
