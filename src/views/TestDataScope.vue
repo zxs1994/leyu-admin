@@ -1,7 +1,7 @@
 <script setup lang="jsx">
 import { ref, computed, watch } from 'vue'
 import Rules from '@/utils/rules'
-import { dataScopeTestApi as api } from '@/api'
+import { testDataScopeApi as api } from '@/api'
 import useCrudList from '@/composables/useCrudList'
 import useCrudModal from '@/composables/useCrudModal'
 import useCrudAction from '@/composables/useCrudAction'

@@ -3,7 +3,8 @@ import {
   UserOutlined,
   TeamOutlined,
   SafetyOutlined,
-  ApartmentOutlined
+  ApartmentOutlined,
+  AuditOutlined
 } from '@ant-design/icons-vue'
 
 const Layout = () => import('@/layout/Layout.vue')
@@ -63,5 +64,16 @@ export default {
       },
       component: () => import('@/views/sys/Permission.vue'),
     },
+    {
+      path: 'operation-log',
+      name: 'OperationLog',
+      meta: {
+        title: '操作日志',
+        icon: AuditOutlined,
+        isShowMenu: true,
+        perm: 'sys:operation-log:page',
+      },
+      component: () => import('@/views/sys/OperationLog.vue'),
+    }
   ],
 }

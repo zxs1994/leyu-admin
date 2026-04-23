@@ -54,6 +54,10 @@ export const tenantApi = {
   switchTenant: (id) => post(`/platform/tenant/switch/${id}`),
 }
 
-export const dataScopeTestApi = {
-  ...createApi('/data-scope-test')
+export const testDataScopeApi = {
+  ...createApi('/test/data-scope')
+}
+
+export const operationLogApi = {
+  ...createApi('/sys/operation-log'),
 }

@@ -52,8 +52,8 @@ const homeRouter = {
   }, ],
 }
 
-const dataScopeTestRouter = {
-  path: '/data-scope-test',
+const TestDataScopeRouter = {
+  path: '/test-data-scope',
   component: Layout,
   meta: {
     isShowMenu,
@@ -62,12 +62,12 @@ const dataScopeTestRouter = {
   },
   children: [{
     path: '',
-    name: 'DataScopeTest',
+    name: 'TestDataScope',
     meta: {
       keepAlive,
       isShowMenu
     },
-    component: () => import('@/views/DataScopeTest.vue'),
+    component: () => import('@/views/TestDataScope.vue'),
   }, ],
 }
 
@@ -84,7 +84,7 @@ const routes = [
   homeRouter,
   sysRouter,
   swaggerMenu,
-  dataScopeTestRouter
+  TestDataScopeRouter
 ]
 
 const router = createRouter({
