@@ -3,7 +3,7 @@
   "zhName": "乐羽",
   "description": "Leyu Admin --- 一个基于 Vue 3 + Vite + Ant Design Vue 的现代化后台管理系统模板。",
   "private": true,
-  "version": "1.0.17",
+  "version": "1.0.18",
   "type": "module",
   "scripts": {
     "dev": "vite",
