@@ -8,7 +8,7 @@ import useCrudAction from '@/composables/useCrudAction'
 import { checkPermission } from '@/utils/permission'
 
 const title = '数据权限测试'
-const baseCode = 'data-scope-test'
+const baseCode = 'test:data-scope'
 
 const list = useCrudList({ api })
 const modal = useCrudModal({
