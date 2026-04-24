@@ -104,8 +104,8 @@ const columns = [
 					allowClear
 					style="width: 100px"
 					@change="list.search">
-					<a-select-option :value="1">成功</a-select-option>
-					<a-select-option :value="0">失败</a-select-option>
+					<a-select-option :value="true">成功</a-select-option>
+					<a-select-option :value="false">失败</a-select-option>
 				</a-select>
 				<a-button
 					type="primary"

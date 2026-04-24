@@ -24,3 +24,4 @@ dist-ssr
 *.sw?
 
 email.config.js
+.env.localhost
