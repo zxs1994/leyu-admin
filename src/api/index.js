@@ -5,11 +5,6 @@ import {
   del
 } from './axios.config.js'
 
-import {
-  getToken,
-  setToken
-} from '@/utils'
-
 const createApi = (path) => ({
   page: (params) => get(`${path}/page`, params),
   item: (id) => get(`${path}/${id}`),
